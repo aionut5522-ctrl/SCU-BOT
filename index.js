@@ -14,6 +14,7 @@ const {
 require('dotenv').config();
 
 const TOKEN = process.env.TOKEN;
+const GUILD_ID = '1507862769741860925';
 const CANAL_IC_ID = '1507862770597499077';
 
 const client = new Client({
@@ -49,7 +50,8 @@ function createEmbed(title, color, user) {
     return new EmbedBuilder()
         .setColor(color)
         .setTitle(title)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }));
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setFooter({ text: `O' Jastemma • ${user.username}` });
 }
 
 const commands = [
@@ -113,126 +115,142 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 client.once('ready', async () => {
     console.log(`✅ Bot online: ${client.user.tag}`);
 
-    await rest.put(
-        Routes.applicationCommands(client.user.id),
-        { body: commands }
-    );
+    try {
+        await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
 
-    console.log('✅ Slash commands loaded.');
+        await rest.put(
+            Routes.applicationGuildCommands(client.user.id, GUILD_ID),
+            { body: commands }
+        );
+
+        console.log('✅ Slash commands loaded.');
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 client.on('interactionCreate', async interaction => {
-    if (interaction.isButton()) {
-        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-            return interaction.reply({
-                content: '❌ Nu ai acces la aceasta actiune.',
-                ephemeral: true
-            });
-        }
+    try {
+        if (interaction.isButton()) {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply({
+                    content: '❌ Nu ai acces la aceasta actiune.',
+                    ephemeral: true
+                });
+            }
 
-        const approved = interaction.customId.startsWith('accept_');
-        const embed = EmbedBuilder.from(interaction.message.embeds[0]);
-        const oldDescription = embed.data.description || '';
+            const approved = interaction.customId.startsWith('accept_');
+            const embed = EmbedBuilder.from(interaction.message.embeds[0]);
+            const oldDescription = embed.data.description || '';
 
-        embed.setTitle(
-            approved
-                ? `${embed.data.title.replace(' - IN ASTEPTARE', '')} - APROBAT ✅`
-                : `${embed.data.title.replace(' - IN ASTEPTARE', '')} - RESPINS ❌`
-        );
+            embed.setTitle(
+                approved
+                    ? `${embed.data.title.replace(' - IN ASTEPTARE', '')} - APROBAT ✅`
+                    : `${embed.data.title.replace(' - IN ASTEPTARE', '')} - RESPINS ❌`
+            );
 
-        embed.setDescription(
+            embed.setDescription(
 `${oldDescription}
 
 ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${interaction.user.username}
 🗓️ **${approved ? 'Acceptata' : 'Respinsa'} pe:** ${dataRo()}`
-        );
+            );
 
-        embed.setColor(approved ? 0x57f287 : 0xed4245);
+            embed.setColor(approved ? 0x57f287 : 0xed4245);
 
-        return interaction.update({
-            embeds: [embed],
-            components: []
-        });
-    }
+            return interaction.update({
+                embeds: [embed],
+                components: []
+            });
+        }
 
-    if (!interaction.isChatInputCommand()) return;
+        if (!interaction.isChatInputCommand()) return;
 
-    await interaction.deferReply();
+        await interaction.deferReply();
 
-    if (interaction.commandName === 'me') {
-        const text = interaction.options.getString('text');
-        return interaction.editReply(`💬 ***${interaction.user.username}*** spune: ***${text}***`);
-    }
+        if (interaction.commandName === 'me') {
+            const text = interaction.options.getString('text');
+            return interaction.editReply(`💬 ***${interaction.user.username}*** spune: ***${text}***`);
+        }
 
-    if (interaction.commandName === 'sanctiune') {
-        const persoana = interaction.options.getUser('persoana');
-        const sanctiune = interaction.options.getString('sanctiune');
-        const motiv = interaction.options.getString('motiv');
-        const amenda = interaction.options.getString('amenda') || 'N/A';
-        const dovezi = interaction.options.getString('dovezi') || 'N/A';
+        if (interaction.commandName === 'sanctiune') {
+            const persoana = interaction.options.getUser('persoana');
+            const sanctiune = interaction.options.getString('sanctiune');
+            const motiv = interaction.options.getString('motiv');
+            const amenda = interaction.options.getString('amenda') || 'N/A';
+            const dovezi = interaction.options.getString('dovezi') || 'N/A';
 
-        const embed = createEmbed('🔴 Sanctiune - IN ASTEPTARE', 0xfee75c, persoana)
-            .setDescription(
+            const embed = createEmbed('🔴 Sanctiune - IN ASTEPTARE', 0xfee75c, persoana)
+                .setDescription(
 `📅 **Data:** ${dataRo()}
 👤 **Persoana sanctionata:** ${persoana}
 ⚠️ **Sanctiune:** ${sanctiune}
 💸 **Amenda:** ${amenda}
 📋 **Motiv:** ${motiv}
 📎 **Dovezi:** ${dovezi}`
-            );
+                );
 
-        return interaction.editReply({ embeds: [embed], components: [createButtons('sanctiune')] });
-    }
+            return interaction.editReply({ embeds: [embed], components: [createButtons('sanctiune')] });
+        }
 
-    if (interaction.commandName === 'demisie') {
-        const embed = createEmbed('📄 Cerere Demisie - IN ASTEPTARE', 0xfee75c, interaction.user)
-            .setDescription(
+        if (interaction.commandName === 'demisie') {
+            const embed = createEmbed('📄 Cerere Demisie - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `👤 **Nume:** ${interaction.options.getString('nume')}
 🪪 **CNP:** ${interaction.options.getString('cnp')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}
 📅 **Zile:** ${interaction.options.getString('zile')}
 🎖️ **Rank:** ${interaction.options.getString('rank')}`
-            );
+                );
 
-        return interaction.editReply({ embeds: [embed], components: [createButtons('demisie')] });
-    }
+            return interaction.editReply({ embeds: [embed], components: [createButtons('demisie')] });
+        }
 
-    if (interaction.commandName === 'cerereinactivitate') {
-        const embed = createEmbed('🟡 Cerere Inactivitate - IN ASTEPTARE', 0xfee75c, interaction.user)
-            .setDescription(
+        if (interaction.commandName === 'cerereinactivitate') {
+            const embed = createEmbed('🟡 Cerere Inactivitate - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `📆 **Perioada:** ${interaction.options.getString('perioada')}
 🔢 **Numar zile:** ${interaction.options.getString('zile')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}
 📌 **Alte detalii:** ${interaction.options.getString('detalii') || 'N/A'}`
-            );
+                );
 
-        return interaction.editReply({ embeds: [embed], components: [createButtons('inactivitate')] });
-    }
+            return interaction.editReply({ embeds: [embed], components: [createButtons('inactivitate')] });
+        }
 
-    if (interaction.commandName === 'invoiresedinta') {
-        const embed = createEmbed('🟡 Cerere Invoire Sedinta - IN ASTEPTARE', 0xfee75c, interaction.user)
-            .setDescription(
+        if (interaction.commandName === 'invoiresedinta') {
+            const embed = createEmbed('🟡 Cerere Invoire Sedinta - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `👤 **Utilizator:** ${interaction.user}
 📅 **Data sedintei:** ${interaction.options.getString('data')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}`
-            );
+                );
 
-        return interaction.editReply({ embeds: [embed], components: [createButtons('invoiresedinta')] });
-    }
+            return interaction.editReply({ embeds: [embed], components: [createButtons('invoiresedinta')] });
+        }
 
-    if (interaction.commandName === 'seif') {
-        const actiune = interaction.options.getString('actiune');
+        if (interaction.commandName === 'seif') {
+            const actiune = interaction.options.getString('actiune');
 
-        const embed = createEmbed(`💰 ${actiune} Seif - IN ASTEPTARE`, 0xfee75c, interaction.user)
-            .setDescription(
+            const embed = createEmbed(`💰 ${actiune} Seif - IN ASTEPTARE`, 0xfee75c, interaction.user)
+                .setDescription(
 `📦 **Actiune:** ${actiune}
 👤 **Nume IC:** ${interaction.options.getString('numeic')}
 🪪 **CNP:** ${interaction.options.getString('cnp')}
 💵 **Suma/Materiale:** ${interaction.options.getString('suma')}
 📎 **Dovada:** ${interaction.options.getString('dovada')}`
-            );
+                );
 
-        return interaction.editReply({ embeds: [embed], components: [createButtons('seif')] });
+            return interaction.editReply({ embeds: [embed], components: [createButtons('seif')] });
+        }
+
+    } catch (error) {
+        if (error.code === 10062) {
+            console.log('Interactiune expirata/ignorata.');
+            return;
+        }
+
+        console.error(error);
     }
 });
 
@@ -246,6 +264,13 @@ client.on('messageCreate', async message => {
             console.log('Nu pot sterge mesajul.');
         }
     }
+});
+
+client.on('error', console.error);
+
+process.on('unhandledRejection', error => {
+    if (error.code === 10062) return;
+    console.error(error);
 });
 
 client.login(TOKEN);
