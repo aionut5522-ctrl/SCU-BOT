@@ -24,10 +24,13 @@ const client = new Client({
 
 const TOKEN = process.env.TOKEN;
 
-// CANAL IC
+// ID CANAL IC
 const CANAL_IC_ID = '1507862770597499077';
 
-// SLASH COMMANDS
+// LINK LOGO SCU
+const LOGO_SCU = 'https://i.imgur.com/V5sP8LQ.png';
+
+// COMENZI
 const commands = [
 
     // /me
@@ -183,20 +186,21 @@ function createButtons(type) {
     );
 }
 
-// EMBED
-function createEmbed(title, color, user) {
+// EMBED PREMIUM
+function createEmbed(title, user) {
 
     return new EmbedBuilder()
-        .setColor(color)
+        .setColor(0xd4af37)
         .setTitle(title)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setImage(LOGO_SCU)
         .setFooter({
-            text: `Emis de ${user.tag}`
+            text: `Sacra Corona Unita • ${user.tag}`
         })
         .setTimestamp();
 }
 
-// BOT READY
+// READY
 client.once('ready', async () => {
 
     console.log(`✅ Bot online: ${client.user.tag}`);
@@ -280,13 +284,12 @@ client.on('interactionCreate', async interaction => {
 
         const embed = createEmbed(
             '🚨 Sanctiune - IN ASTEPTARE',
-            0xf1c40f,
             persoana
         );
 
         embed.addFields(
             { name: '📅 Data', value: new Date().toLocaleDateString('ro-RO') },
-            { name: '👤 Persoana', value: `${persoana}` },
+            { name: '👤 Persoana sanctionata', value: `${persoana}` },
             { name: '⚠️ Sanctiune', value: sanctiune },
             { name: '💸 Amenda', value: amenda },
             { name: '📋 Motiv', value: motiv },
@@ -309,15 +312,14 @@ client.on('interactionCreate', async interaction => {
         const rank = interaction.options.getString('rank');
 
         const embed = createEmbed(
-            '📄 Demisie - IN ASTEPTARE',
-            0xf1c40f,
+            '📄 Cerere Demisie - IN ASTEPTARE',
             interaction.user
         );
 
         embed.addFields(
             { name: '👤 Nume', value: nume },
             { name: '🪪 CNP', value: cnp },
-            { name: '📋 Motiv', value: motiv },
+            { name: '📋 Motivul demisiei', value: motiv },
             { name: '📅 Zile', value: zile },
             { name: '🎖️ Rank', value: rank }
         );
@@ -338,15 +340,14 @@ client.on('interactionCreate', async interaction => {
 
         const embed = createEmbed(
             '🟡 Cerere Inactivitate - IN ASTEPTARE',
-            0xf1c40f,
             interaction.user
         );
 
         embed.addFields(
             { name: '📆 Perioada', value: perioada },
-            { name: '🔢 Zile', value: zile },
+            { name: '🔢 Numar zile', value: zile },
             { name: '📋 Motiv', value: motiv },
-            { name: '📌 Detalii', value: detalii }
+            { name: '📌 Alte detalii', value: detalii }
         );
 
         return interaction.editReply({
@@ -366,7 +367,6 @@ client.on('interactionCreate', async interaction => {
 
         const embed = createEmbed(
             `💰 ${actiune} Seif - IN ASTEPTARE`,
-            0xf1c40f,
             interaction.user
         );
 
