@@ -7,7 +7,8 @@ const {
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle
+    ButtonStyle,
+    PermissionFlagsBits
 } = require('discord.js');
 
 require('dotenv').config();
@@ -23,25 +24,26 @@ const client = new Client({
 
 const TOKEN = process.env.TOKEN;
 
-// CANAL IC unde se sterg mesajele normale
+// CANAL IC
 const CANAL_IC_ID = '1507862770597499077';
 
-// ROL conducere care poate aproba/respinge
-const ROLE_CONDUCERE_ID = '1507869789215789076';
-
+// SLASH COMMANDS
 const commands = [
+
+    // /me
     new SlashCommandBuilder()
         .setName('me')
         .setDescription('Actiune RP')
         .addStringOption(option =>
             option.setName('text')
-                .setDescription('Textul actiunii')
+                .setDescription('Text')
                 .setRequired(true)
         ),
 
+    // /sanctiune
     new SlashCommandBuilder()
         .setName('sanctiune')
-        .setDescription('Emite o sanctiune')
+        .setDescription('Acorda o sanctiune')
         .addUserOption(option =>
             option.setName('persoana')
                 .setDescription('Persoana sanctionata')
@@ -49,31 +51,32 @@ const commands = [
         )
         .addStringOption(option =>
             option.setName('sanctiune')
-                .setDescription('Sanctiunea acordata')
+                .setDescription('Tip sanctiune')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('motiv')
-                .setDescription('Motivul sanctiunii')
+                .setDescription('Motiv')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('amenda')
-                .setDescription('Amenda optionala')
+                .setDescription('Amenda optional')
                 .setRequired(false)
         )
         .addStringOption(option =>
             option.setName('dovezi')
-                .setDescription('Dovezi optional')
+                .setDescription('Link dovezi')
                 .setRequired(false)
         ),
 
+    // /demisie
     new SlashCommandBuilder()
         .setName('demisie')
-        .setDescription('Depune o cerere de demisie')
+        .setDescription('Cerere demisie')
         .addStringOption(option =>
             option.setName('nume')
-                .setDescription('Nume IC')
+                .setDescription('Nume')
                 .setRequired(true)
         )
         .addStringOption(option =>
@@ -83,7 +86,7 @@ const commands = [
         )
         .addStringOption(option =>
             option.setName('motiv')
-                .setDescription('Motivul demisiei')
+                .setDescription('Motiv')
                 .setRequired(true)
         )
         .addStringOption(option =>
@@ -97,17 +100,18 @@ const commands = [
                 .setRequired(true)
         ),
 
+    // /cerereinactivitate
     new SlashCommandBuilder()
         .setName('cerereinactivitate')
-        .setDescription('Depune o cerere de inactivitate')
+        .setDescription('Cerere inactivitate')
         .addStringOption(option =>
             option.setName('perioada')
-                .setDescription('Ex: 17.05.2026 - 24.05.2026')
+                .setDescription('Perioada')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('zile')
-                .setDescription('Numar de zile')
+                .setDescription('Numar zile')
                 .setRequired(true)
         )
         .addStringOption(option =>
@@ -117,13 +121,14 @@ const commands = [
         )
         .addStringOption(option =>
             option.setName('detalii')
-                .setDescription('Alte detalii optional')
+                .setDescription('Alte detalii')
                 .setRequired(false)
         ),
 
+    // /depunereseif
     new SlashCommandBuilder()
         .setName('depunereseif')
-        .setDescription('Depunere in seif')
+        .setDescription('Depunere seif')
         .addStringOption(option =>
             option.setName('numeic')
                 .setDescription('Nume IC')
@@ -136,25 +141,26 @@ const commands = [
         )
         .addStringOption(option =>
             option.setName('suma')
-                .setDescription('Suma de bani/materiale')
+                .setDescription('Suma/materiale')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('dovada')
-                .setDescription('Dovada foto/link')
+                .setDescription('Link dovada')
                 .setRequired(true)
         ),
 
+    // /retragereseif
     new SlashCommandBuilder()
         .setName('retragereseif')
-        .setDescription('Retragere/adaugare din seif')
+        .setDescription('Retragere/adaugare seif')
         .addStringOption(option =>
             option.setName('actiune')
-                .setDescription('Ce s-a facut in seif')
+                .setDescription('Actiune')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Retragere / scos', value: 'Retragere / scos' },
-                    { name: 'Adaugare / pus', value: 'Adaugare / pus' }
+                    { name: 'Retragere / Scos', value: 'Retragere / Scos' },
+                    { name: 'Adaugare / Pus', value: 'Adaugare / Pus' }
                 )
         )
         .addStringOption(option =>
@@ -169,26 +175,26 @@ const commands = [
         )
         .addStringOption(option =>
             option.setName('suma')
-                .setDescription('Suma de bani/materiale')
+                .setDescription('Suma/materiale')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('dovada')
-                .setDescription('Dovada foto/link')
+                .setDescription('Link dovada')
                 .setRequired(true)
         )
+
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
-function dataRo() {
-    return new Date().toLocaleDateString('ro-RO');
-}
+// BUTOANE
+function createButtons(type) {
 
-function buttons(type) {
     return new ActionRowBuilder().addComponents(
+
         new ButtonBuilder()
-            .setCustomId(`approve_${type}`)
+            .setCustomId(`accept_${type}`)
             .setLabel('Aprobat')
             .setEmoji('✅')
             .setStyle(ButtonStyle.Success),
@@ -198,59 +204,75 @@ function buttons(type) {
             .setLabel('Respins')
             .setEmoji('❌')
             .setStyle(ButtonStyle.Danger)
+
     );
 }
 
-function baseEmbed(title, color, user) {
+// EMBED
+function createEmbed(title, color, user) {
+
     return new EmbedBuilder()
-        .setTitle(title)
         .setColor(color)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setFooter({ text: `Emis de ${user.tag}` })
+        .setTitle(title)
+        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+        .setFooter({
+            text: `Emis de ${user.tag}`
+        })
         .setTimestamp();
 }
 
+// BOT READY
 client.once('ready', async () => {
+
     console.log(`✅ Bot online: ${client.user.tag}`);
 
     try {
+
         await rest.put(
             Routes.applicationCommands(client.user.id),
             { body: commands }
         );
 
         console.log('✅ Slash commands loaded.');
+
     } catch (error) {
         console.error(error);
     }
+
 });
 
+// INTERACTIUNI
 client.on('interactionCreate', async interaction => {
-    if (interaction.isButton()) {
-        const member = interaction.member;
 
-        if (!member.roles.cache.has(ROLE_CONDUCERE_ID)) {
+    // BUTOANE
+    if (interaction.isButton()) {
+
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+
             return interaction.reply({
-                content: '❌ Nu ai permisiunea sa aprobi/respingi aceasta cerere.',
+                content: '❌ Nu ai acces la aceasta actiune.',
                 ephemeral: true
             });
         }
 
-        const isApproved = interaction.customId.startsWith('approve_');
-        const oldEmbed = interaction.message.embeds[0];
+        const approved = interaction.customId.startsWith('accept_');
 
-        const embed = EmbedBuilder.from(oldEmbed)
-            .setColor(isApproved ? 0x2ecc71 : 0xe74c3c)
+        const embed = EmbedBuilder.from(interaction.message.embeds[0]);
+
+        embed
+            .setColor(approved ? 0x2ecc71 : 0xe74c3c)
             .setTitle(
-                oldEmbed.title
-                    .replace('IN ASTEPTARE', isApproved ? 'APROBAT ✅' : 'RESPINS ❌')
-                    .replace('Asteptare', isApproved ? 'Aprobat ✅' : 'Respins ❌')
-            )
-            .addFields({
-                name: isApproved ? '✅ Aprobat de' : '❌ Respins de',
-                value: `${interaction.user}`,
-                inline: true
-            });
+                embed.data.title.replace(
+                    'IN ASTEPTARE',
+                    approved ? 'APROBAT ✅' : 'RESPINS ❌'
+                )
+            );
+
+        embed.addFields({
+            name: approved ? '✅ Aprobat de' : '❌ Respins de',
+            value: `${interaction.user}`,
+            inline: false
+        });
 
         return interaction.update({
             embeds: [embed],
@@ -260,115 +282,181 @@ client.on('interactionCreate', async interaction => {
 
     if (!interaction.isChatInputCommand()) return;
 
+    await interaction.deferReply();
+
+    // /me
     if (interaction.commandName === 'me') {
+
         const text = interaction.options.getString('text');
-        return interaction.reply(`💬 ***${interaction.user.username}*** spune: ***${text}***`);
+
+        return interaction.editReply(
+            `💬 ***${interaction.user.username}*** spune: ***${text}***`
+        );
     }
 
+    // /sanctiune
     if (interaction.commandName === 'sanctiune') {
+
         const persoana = interaction.options.getUser('persoana');
         const sanctiune = interaction.options.getString('sanctiune');
         const motiv = interaction.options.getString('motiv');
         const amenda = interaction.options.getString('amenda') || 'N/A';
         const dovezi = interaction.options.getString('dovezi') || 'N/A';
 
-        const embed = baseEmbed('🔴 Sanctiune - IN ASTEPTARE', 0xf1c40f, persoana)
-            .addFields(
-                { name: '📅 Data', value: dataRo(), inline: false },
-                { name: '👤 Persoana sanctionata', value: `${persoana}`, inline: false },
-                { name: '⚠️ Sanctiune', value: sanctiune, inline: false },
-                { name: '💸 Amenda', value: amenda, inline: false },
-                { name: '📋 Motiv', value: motiv, inline: false },
-                { name: '📎 Dovezi', value: dovezi, inline: false }
-            );
+        const embed = createEmbed(
+            '🚨 Sanctiune - IN ASTEPTARE',
+            0xf1c40f,
+            persoana
+        );
 
-        return interaction.reply({ embeds: [embed], components: [buttons('sanctiune')] });
+        embed.addFields(
+            { name: '📅 Data', value: new Date().toLocaleDateString('ro-RO') },
+            { name: '👤 Persoana', value: `${persoana}` },
+            { name: '⚠️ Sanctiune', value: sanctiune },
+            { name: '💸 Amenda', value: amenda },
+            { name: '📋 Motiv', value: motiv },
+            { name: '📎 Dovezi', value: dovezi }
+        );
+
+        return interaction.editReply({
+            embeds: [embed],
+            components: [createButtons('sanctiune')]
+        });
     }
 
+    // /demisie
     if (interaction.commandName === 'demisie') {
+
         const nume = interaction.options.getString('nume');
         const cnp = interaction.options.getString('cnp');
         const motiv = interaction.options.getString('motiv');
         const zile = interaction.options.getString('zile');
         const rank = interaction.options.getString('rank');
 
-        const embed = baseEmbed('🔵 Cerere Demisie - IN ASTEPTARE', 0xf1c40f, interaction.user)
-            .addFields(
-                { name: '👤 Nume', value: nume, inline: false },
-                { name: '🪪 CNP', value: cnp, inline: false },
-                { name: '📋 Motivul demisiei', value: motiv, inline: false },
-                { name: '📅 Zile', value: zile, inline: false },
-                { name: '🎖️ Rank', value: rank, inline: false }
-            );
+        const embed = createEmbed(
+            '📄 Demisie - IN ASTEPTARE',
+            0xf1c40f,
+            interaction.user
+        );
 
-        return interaction.reply({ embeds: [embed], components: [buttons('demisie')] });
+        embed.addFields(
+            { name: '👤 Nume', value: nume },
+            { name: '🪪 CNP', value: cnp },
+            { name: '📋 Motiv', value: motiv },
+            { name: '📅 Zile', value: zile },
+            { name: '🎖️ Rank', value: rank }
+        );
+
+        return interaction.editReply({
+            embeds: [embed],
+            components: [createButtons('demisie')]
+        });
     }
 
+    // /cerereinactivitate
     if (interaction.commandName === 'cerereinactivitate') {
+
         const perioada = interaction.options.getString('perioada');
         const zile = interaction.options.getString('zile');
         const motiv = interaction.options.getString('motiv');
         const detalii = interaction.options.getString('detalii') || 'N/A';
 
-        const embed = baseEmbed('🟡 Cerere de Inactivitate - IN ASTEPTARE', 0xf1c40f, interaction.user)
-            .addFields(
-                { name: '👤 Utilizator', value: `${interaction.user}`, inline: false },
-                { name: '📆 Perioada', value: perioada, inline: false },
-                { name: '🔢 Numar de zile', value: zile, inline: false },
-                { name: '✏️ Motiv', value: motiv, inline: false },
-                { name: '📌 Alte detalii', value: detalii, inline: false }
-            );
+        const embed = createEmbed(
+            '🟡 Cerere Inactivitate - IN ASTEPTARE',
+            0xf1c40f,
+            interaction.user
+        );
 
-        return interaction.reply({ embeds: [embed], components: [buttons('inactivitate')] });
+        embed.addFields(
+            { name: '📆 Perioada', value: perioada },
+            { name: '🔢 Zile', value: zile },
+            { name: '📋 Motiv', value: motiv },
+            { name: '📌 Detalii', value: detalii }
+        );
+
+        return interaction.editReply({
+            embeds: [embed],
+            components: [createButtons('inactivitate')]
+        });
     }
 
+    // /depunereseif
     if (interaction.commandName === 'depunereseif') {
+
         const numeic = interaction.options.getString('numeic');
         const cnp = interaction.options.getString('cnp');
         const suma = interaction.options.getString('suma');
         const dovada = interaction.options.getString('dovada');
 
-        const embed = baseEmbed('🟢 Depunere Seif - IN ASTEPTARE', 0xf1c40f, interaction.user)
-            .addFields(
-                { name: '👤 Nume IC', value: numeic, inline: false },
-                { name: '🪪 CNP', value: cnp, inline: false },
-                { name: '💰 Suma de bani/materiale', value: suma, inline: false },
-                { name: '📷 Dovada foto', value: dovada, inline: false }
-            );
+        const embed = createEmbed(
+            '🟢 Depunere Seif - IN ASTEPTARE',
+            0xf1c40f,
+            interaction.user
+        );
 
-        return interaction.reply({ embeds: [embed], components: [buttons('depunereseif')] });
+        embed.addFields(
+            { name: '👤 Nume IC', value: numeic },
+            { name: '🪪 CNP', value: cnp },
+            { name: '💰 Suma/Materiale', value: suma },
+            { name: '📎 Dovada', value: dovada }
+        );
+
+        return interaction.editReply({
+            embeds: [embed],
+            components: [createButtons('depunereseif')]
+        });
     }
 
+    // /retragereseif
     if (interaction.commandName === 'retragereseif') {
+
         const actiune = interaction.options.getString('actiune');
         const numeic = interaction.options.getString('numeic');
         const cnp = interaction.options.getString('cnp');
         const suma = interaction.options.getString('suma');
         const dovada = interaction.options.getString('dovada');
 
-        const embed = baseEmbed('🟠 Retragere/Adaugare Seif - IN ASTEPTARE', 0xf1c40f, interaction.user)
-            .addFields(
-                { name: '📦 Actiune', value: actiune, inline: false },
-                { name: '👤 Nume IC', value: numeic, inline: false },
-                { name: '🪪 CNP', value: cnp, inline: false },
-                { name: '💰 Suma de bani/materiale', value: suma, inline: false },
-                { name: '📷 Dovada foto', value: dovada, inline: false }
-            );
+        const embed = createEmbed(
+            '🟠 Retragere/Adaugare Seif - IN ASTEPTARE',
+            0xf1c40f,
+            interaction.user
+        );
 
-        return interaction.reply({ embeds: [embed], components: [buttons('retragereseif')] });
+        embed.addFields(
+            { name: '📦 Actiune', value: actiune },
+            { name: '👤 Nume IC', value: numeic },
+            { name: '🪪 CNP', value: cnp },
+            { name: '💰 Suma/Materiale', value: suma },
+            { name: '📎 Dovada', value: dovada }
+        );
+
+        return interaction.editReply({
+            embeds: [embed],
+            components: [createButtons('retragereseif')]
+        });
     }
+
 });
 
+// STERGERE MESAJE IC
 client.on('messageCreate', async message => {
+
     if (message.author.bot) return;
 
     if (message.channel.id === CANAL_IC_ID) {
+
         try {
+
             await message.delete();
+
         } catch (err) {
-            console.log('Nu pot sterge mesajul din canalul IC.');
+
+            console.log('Nu pot sterge mesajul.');
+
         }
+
     }
+
 });
 
 client.login(TOKEN);
