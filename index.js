@@ -33,7 +33,7 @@ const commands = [
     // /me
     new SlashCommandBuilder()
         .setName('me')
-        .setDescription('Actiune RP')
+        .setDescription('Actiune roleplay')
         .addStringOption(option =>
             option.setName('text')
                 .setDescription('Text')
@@ -125,42 +125,17 @@ const commands = [
                 .setRequired(false)
         ),
 
-    // /depunereseif
+    // /seif
     new SlashCommandBuilder()
-        .setName('depunereseif')
-        .setDescription('Depunere seif')
-        .addStringOption(option =>
-            option.setName('numeic')
-                .setDescription('Nume IC')
-                .setRequired(true)
-        )
-        .addStringOption(option =>
-            option.setName('cnp')
-                .setDescription('CNP')
-                .setRequired(true)
-        )
-        .addStringOption(option =>
-            option.setName('suma')
-                .setDescription('Suma/materiale')
-                .setRequired(true)
-        )
-        .addStringOption(option =>
-            option.setName('dovada')
-                .setDescription('Link dovada')
-                .setRequired(true)
-        ),
-
-    // /retragereseif
-    new SlashCommandBuilder()
-        .setName('retragereseif')
-        .setDescription('Retragere/adaugare seif')
+        .setName('seif')
+        .setDescription('Gestionare seif')
         .addStringOption(option =>
             option.setName('actiune')
-                .setDescription('Actiune')
+                .setDescription('Tip actiune')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Retragere / Scos', value: 'Retragere / Scos' },
-                    { name: 'Adaugare / Pus', value: 'Adaugare / Pus' }
+                    { name: 'Depunere', value: 'Depunere' },
+                    { name: 'Retragere', value: 'Retragere' }
                 )
         )
         .addStringOption(option =>
@@ -380,35 +355,8 @@ client.on('interactionCreate', async interaction => {
         });
     }
 
-    // /depunereseif
-    if (interaction.commandName === 'depunereseif') {
-
-        const numeic = interaction.options.getString('numeic');
-        const cnp = interaction.options.getString('cnp');
-        const suma = interaction.options.getString('suma');
-        const dovada = interaction.options.getString('dovada');
-
-        const embed = createEmbed(
-            '🟢 Depunere Seif - IN ASTEPTARE',
-            0xf1c40f,
-            interaction.user
-        );
-
-        embed.addFields(
-            { name: '👤 Nume IC', value: numeic },
-            { name: '🪪 CNP', value: cnp },
-            { name: '💰 Suma/Materiale', value: suma },
-            { name: '📎 Dovada', value: dovada }
-        );
-
-        return interaction.editReply({
-            embeds: [embed],
-            components: [createButtons('depunereseif')]
-        });
-    }
-
-    // /retragereseif
-    if (interaction.commandName === 'retragereseif') {
+    // /seif
+    if (interaction.commandName === 'seif') {
 
         const actiune = interaction.options.getString('actiune');
         const numeic = interaction.options.getString('numeic');
@@ -417,7 +365,7 @@ client.on('interactionCreate', async interaction => {
         const dovada = interaction.options.getString('dovada');
 
         const embed = createEmbed(
-            '🟠 Retragere/Adaugare Seif - IN ASTEPTARE',
+            `💰 ${actiune} Seif - IN ASTEPTARE`,
             0xf1c40f,
             interaction.user
         );
@@ -426,13 +374,13 @@ client.on('interactionCreate', async interaction => {
             { name: '📦 Actiune', value: actiune },
             { name: '👤 Nume IC', value: numeic },
             { name: '🪪 CNP', value: cnp },
-            { name: '💰 Suma/Materiale', value: suma },
+            { name: '💵 Suma/Materiale', value: suma },
             { name: '📎 Dovada', value: dovada }
         );
 
         return interaction.editReply({
             embeds: [embed],
-            components: [createButtons('retragereseif')]
+            components: [createButtons('seif')]
         });
     }
 
