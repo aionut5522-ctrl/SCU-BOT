@@ -8,7 +8,10 @@ const {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle
 } = require('discord.js');
 
 require('dotenv').config();
@@ -47,7 +50,9 @@ function formatMoney(n) {
 }
 
 function createButtons(type) {
+
     return new ActionRowBuilder().addComponents(
+
         new ButtonBuilder()
             .setCustomId(`accept_${type}`)
             .setLabel('Aprobat')
@@ -59,90 +64,126 @@ function createButtons(type) {
             .setLabel('Respins')
             .setEmoji('❌')
             .setStyle(ButtonStyle.Danger)
+
     );
 }
 
 function createEmbed(title, color, user) {
+
     return new EmbedBuilder()
         .setColor(color)
         .setTitle(title)
-        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setFooter({ text: `O' Jastemma • ${user.username}` });
+        .setThumbnail(
+            user.displayAvatarURL({
+                dynamic: true,
+                size: 1024
+            })
+        )
+        .setFooter({
+            text: `O' Jastemma • ${user.username}`
+        });
 }
 
 function craftDroguri(item, cantitate, procentSpalare) {
+
     if (item === 'cocaina') {
+
         const frunze = cantitate * 3;
         const sodiu = cantitate / 4;
         const amoniac = cantitate / 4;
         const plicuri = cantitate;
 
-        const investitie = (sodiu * 4500) + (amoniac * 4500) + (plicuri * 150);
+        const investitie =
+            (sodiu * 4500) +
+            (amoniac * 4500) +
+            (plicuri * 150);
+
         const murdari = cantitate * 4862;
-        const curatiDupaSpalare = murdari * (procentSpalare / 100);
-        const profit = curatiDupaSpalare - investitie;
+
+        const baniCurati =
+            murdari * ((100 - procentSpalare) / 100);
+
+        const profit = baniCurati - investitie;
 
         return {
+
             title: `🧪 Craft Cocaina x${cantitate}`,
+
             description:
 `🌿 **Frunze Coca:** ${frunze}
 🧂 **Sodiu:** ${sodiu}
 ⚗️ **Amoniac:** ${amoniac}
 📦 **Plicuri:** ${plicuri}
 
-💰 **Investitie:** ${formatMoney(investitie)} curati
+💰 **Investitie:** ${formatMoney(investitie)}
 💸 **Bani murdari:** ${formatMoney(murdari)}
-🧼 **Procent spalare:** ${procentSpalare}%
-💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+🧼 **Taxa spalare:** ${procentSpalare}%
+
+💵 **Bani curati finali:** ${formatMoney(baniCurati)}
 📈 **Profit net:** ${formatMoney(profit)}`
         };
     }
 
     if (item === 'crack') {
+
         const plicuriCocaina = cantitate / 2;
         const brichete = cantitate / 2;
         const apa = cantitate;
 
-        const investitieCocaina = plicuriCocaina * 2400;
-        const investitieCrack = cantitate * 140;
-        const investitieTotala = investitieCocaina + investitieCrack;
+        const investitie =
+            cantitate * 140;
 
-        const murdari = cantitate * 3180;
-        const curatiDupaSpalare = murdari * (procentSpalare / 100);
-        const profit = curatiDupaSpalare - investitieTotala;
+        const murdari =
+            cantitate * 3180;
+
+        const baniCurati =
+            murdari * ((100 - procentSpalare) / 100);
+
+        const profit =
+            baniCurati - investitie;
 
         return {
+
             title: `🧊 Craft Crack x${cantitate}`,
+
             description:
-`🧪 **Plicuri Cocaina necesare:** ${plicuriCocaina}
+`🧪 **Plicuri Cocaina:** ${plicuriCocaina}
 🔥 **Brichete:** ${brichete}
 💧 **Apa:** ${apa}
 
-💰 **Investitie cocaina:** ${formatMoney(investitieCocaina)}
-💰 **Investitie crack:** ${formatMoney(investitieCrack)}
-💰 **Investitie totala:** ${formatMoney(investitieTotala)}
-
+💰 **Investitie:** ${formatMoney(investitie)}
 💸 **Bani murdari:** ${formatMoney(murdari)}
-🧼 **Procent spalare:** ${procentSpalare}%
-💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+🧼 **Taxa spalare:** ${procentSpalare}%
+
+💵 **Bani curati finali:** ${formatMoney(baniCurati)}
 📈 **Profit net:** ${formatMoney(profit)}`
         };
     }
 
     if (item === 'tigari') {
+
         const frunze = cantitate * 20;
         const foite = cantitate * 5;
         const filtre = cantitate * 5;
         const rasnite = cantitate * 2;
         const pacheteGoale = cantitate;
 
-        const investitie = cantitate * 3000;
-        const murdari = cantitate * 5700;
-        const curatiDupaSpalare = murdari * (procentSpalare / 100);
-        const profit = curatiDupaSpalare - investitie;
+        const investitie =
+            cantitate * 3000;
+
+        const murdari =
+            cantitate * 5700;
+
+        const baniCurati =
+            murdari * ((100 - procentSpalare) / 100);
+
+        const profit =
+            baniCurati - investitie;
 
         return {
+
             title: `🚬 Craft Tigari x${cantitate}`,
+
             description:
 `🌿 **Frunze:** ${frunze}
 📄 **Foite:** ${foite}
@@ -150,10 +191,11 @@ function craftDroguri(item, cantitate, procentSpalare) {
 ⚙️ **Rasnite:** ${rasnite}
 📦 **Pachete goale:** ${pacheteGoale}
 
-💰 **Investitie:** ${formatMoney(investitie)} curati
+💰 **Investitie:** ${formatMoney(investitie)}
 💸 **Bani murdari:** ${formatMoney(murdari)}
-🧼 **Procent spalare:** ${procentSpalare}%
-💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+🧼 **Taxa spalare:** ${procentSpalare}%
+
+💵 **Bani curati finali:** ${formatMoney(baniCurati)}
 📈 **Profit net:** ${formatMoney(profit)}`
         };
     }
@@ -162,7 +204,9 @@ function craftDroguri(item, cantitate, procentSpalare) {
 }
 
 function craftArme(item, cantitate) {
+
     const arme = {
+
         pistol: {
             title: '🔫 Craft Pistol',
             cost: 13000,
@@ -173,6 +217,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 1
             }
         },
+
         pistolmk2: {
             title: '🔫 Craft Pistol MK2',
             cost: 32500,
@@ -183,6 +228,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 3
             }
         },
+
         pistol50: {
             title: '🔫 Craft Pistol50',
             cost: 32500,
@@ -193,6 +239,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 3
             }
         },
+
         microsmg: {
             title: '🔫 Craft Micro SMG',
             cost: 39000,
@@ -203,6 +250,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 3
             }
         },
+
         machinepistol: {
             title: '🔫 Craft Machine Pistol',
             cost: 97500,
@@ -213,6 +261,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 5
             }
         },
+
         compactrifle: {
             title: '🔫 Craft Compact Rifle',
             cost: 117000,
@@ -223,6 +272,7 @@ function craftArme(item, cantitate) {
                 'Element Fixare': 12
             }
         },
+
         gusenberg: {
             title: '🔫 Craft Gusenberg',
             cost: 162500,
@@ -236,63 +286,80 @@ function craftArme(item, cantitate) {
     };
 
     const arma = arme[item];
+
     if (!arma) return null;
 
     let materialeText = '';
 
     for (const [nume, valoare] of Object.entries(arma.materiale)) {
-        materialeText += `• **${nume}:** ${valoare * cantitate}\n`;
+
+        materialeText +=
+            `• **${nume}:** ${valoare * cantitate}\n`;
     }
 
-    const costTotal = arma.cost * cantitate;
+    const costTotal =
+        arma.cost * cantitate;
 
     return {
-        title: `${arma.title} x${cantitate}`,
+
+        title:
+            `${arma.title} x${cantitate}`,
+
         description:
 `📦 **Materiale necesare:**
 ${materialeText}
+
 💰 **Cost total:** ${formatMoney(costTotal)} murdari`
     };
 }
-
 const commands = [
+
+    // /me
     new SlashCommandBuilder()
         .setName('me')
         .setDescription('Actiune roleplay')
-        .addStringOption(o => o.setName('text').setDescription('Text').setRequired(true)),
+        .addStringOption(o =>
+            o.setName('text')
+                .setDescription('Text')
+                .setRequired(true)
+        ),
 
+    // /sanctiune
     new SlashCommandBuilder()
         .setName('sanctiune')
         .setDescription('Acorda o sanctiune')
-        .addUserOption(o => o.setName('persoana').setDescription('Persoana sanctionata').setRequired(true))
-        .addStringOption(o => o.setName('sanctiune').setDescription('Tip sanctiune').setRequired(true))
-        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
-        .addStringOption(o => o.setName('amenda').setDescription('Amenda').setRequired(false))
-        .addStringOption(o => o.setName('dovezi').setDescription('Dovezi').setRequired(false)),
+        .addUserOption(o =>
+            o.setName('persoana')
+                .setDescription('Persoana sanctionata')
+                .setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName('sanctiune')
+                .setDescription('Tip sanctiune')
+                .setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName('motiv')
+                .setDescription('Motiv')
+                .setRequired(true)
+        ),
 
+    // /demisie
     new SlashCommandBuilder()
         .setName('demisie')
-        .setDescription('Cerere demisie')
-        .addStringOption(o => o.setName('nume').setDescription('Nume IC').setRequired(true))
-        .addStringOption(o => o.setName('cnp').setDescription('CNP').setRequired(true))
-        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
-        .addStringOption(o => o.setName('zile').setDescription('Zile').setRequired(true))
-        .addStringOption(o => o.setName('rank').setDescription('Rank').setRequired(true)),
+        .setDescription('Cerere demisie'),
 
+    // /concediu
     new SlashCommandBuilder()
-        .setName('cerereinactivitate')
-        .setDescription('Cerere inactivitate')
-        .addStringOption(o => o.setName('perioada').setDescription('Perioada').setRequired(true))
-        .addStringOption(o => o.setName('zile').setDescription('Numar zile').setRequired(true))
-        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
-        .addStringOption(o => o.setName('detalii').setDescription('Detalii').setRequired(false)),
+        .setName('concediu')
+        .setDescription('Cerere concediu'),
 
+    // /invoiresedinta
     new SlashCommandBuilder()
         .setName('invoiresedinta')
-        .setDescription('Cerere invoire sedinta')
-        .addStringOption(o => o.setName('data').setDescription('Data sedintei').setRequired(true))
-        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true)),
+        .setDescription('Cerere invoire sedinta'),
 
+    // /seif
     new SlashCommandBuilder()
         .setName('seif')
         .setDescription('Gestionare seif')
@@ -305,38 +372,56 @@ const commands = [
                     { name: 'Retragere', value: 'Retragere' }
                 )
         )
-        .addStringOption(o => o.setName('numeic').setDescription('Nume IC').setRequired(true))
-        .addStringOption(o => o.setName('cnp').setDescription('CNP').setRequired(true))
-        .addStringOption(o => o.setName('suma').setDescription('Suma/materiale').setRequired(true))
-        .addStringOption(o => o.setName('dovada').setDescription('Dovada').setRequired(true)),
+        .addStringOption(o =>
+            o.setName('numeic')
+                .setDescription('Nume IC')
+                .setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName('cnp')
+                .setDescription('CNP')
+                .setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName('suma')
+                .setDescription('Suma/materiale')
+                .setRequired(true)
+        )
+        .addStringOption(o =>
+            o.setName('dovada')
+                .setDescription('Dovada')
+                .setRequired(true)
+        ),
 
+    // /anunt
     new SlashCommandBuilder()
         .setName('anunt')
         .setDescription('Anunt IC')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addStringOption(o => o.setName('text').setDescription('Text anunt').setRequired(true)),
+        .addStringOption(o =>
+            o.setName('text')
+                .setDescription('Text anunt')
+                .setRequired(true)
+        ),
 
+    // /actiune
     new SlashCommandBuilder()
         .setName('actiune')
-        .setDescription("Creeaza o actiune O'Jastemma")
+        .setDescription("Creeaza o actiune")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addStringOption(o => o.setName('locatie').setDescription('Locatia actiunii').setRequired(true)),
+        .addStringOption(o =>
+            o.setName('locatie')
+                .setDescription('Locatie')
+                .setRequired(true)
+        ),
 
+    // /craft
     new SlashCommandBuilder()
         .setName('craft')
         .setDescription('Calculator craft')
         .addStringOption(o =>
-            o.setName('categorie')
-                .setDescription('Categoria craftului')
-                .setRequired(true)
-                .addChoices(
-                    { name: 'Droguri', value: 'droguri' },
-                    { name: 'Arme', value: 'arme' }
-                )
-        )
-        .addStringOption(o =>
-            o.setName('item')
-                .setDescription('Ce vrei sa calculezi')
+            o.setName('tip')
+                .setDescription('Tip craft')
                 .setRequired(true)
                 .addChoices(
                     { name: 'Cocaina', value: 'cocaina' },
@@ -351,37 +436,65 @@ const commands = [
                     { name: 'Gusenberg', value: 'gusenberg' }
                 )
         )
-        .addIntegerOption(o => o.setName('cantitate').setDescription('Cantitatea dorita').setRequired(true))
-        .addNumberOption(o => o.setName('procent_spalare').setDescription('Procent spalare bani murdari').setRequired(false))
+        .addIntegerOption(o =>
+            o.setName('cantitate')
+                .setDescription('Cantitate')
+                .setRequired(true)
+        )
+        .addNumberOption(o =>
+            o.setName('procent_spalare')
+                .setDescription('Taxa spalare bani')
+                .setRequired(false)
+        )
+
 ].map(c => c.toJSON());
 
-const rest = new REST({ version: '10' }).setToken(TOKEN);
+const rest = new REST({
+    version: '10'
+}).setToken(TOKEN);
 
 client.once('ready', async () => {
+
     console.log(`✅ Bot online: ${client.user.tag}`);
 
     try {
-        await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
 
         await rest.put(
-            Routes.applicationGuildCommands(client.user.id, GUILD_ID),
+            Routes.applicationCommands(client.user.id),
+            { body: [] }
+        );
+
+        await rest.put(
+            Routes.applicationGuildCommands(
+                client.user.id,
+                GUILD_ID
+            ),
             { body: commands }
         );
 
         console.log('✅ Slash commands loaded.');
+
     } catch (error) {
         console.error(error);
     }
 });
-
 client.on('interactionCreate', async interaction => {
+
     try {
+
+        // BUTOANE
         if (interaction.isButton()) {
+
+            // SISTEM ACTIUNE
             if (interaction.customId.startsWith('actiune_')) {
+
                 const embed = EmbedBuilder.from(interaction.message.embeds[0]);
                 let desc = embed.data.description || '';
 
-                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const isAdmin = interaction.member.permissions.has(
+                    PermissionFlagsBits.Administrator
+                );
+
                 const mentions = [...desc.matchAll(/<@!?(\d+)>/g)].map(m => m[1]);
                 let participants = [...new Set(mentions)];
 
@@ -389,8 +502,12 @@ client.on('interactionCreate', async interaction => {
                 const actiuneInchisa = desc.includes('🔒 **Status:** INCHISA');
 
                 if (interaction.customId === 'actiune_particip') {
+
                     if (prezentaOprita || actiuneInchisa) {
-                        return interaction.reply({ content: '❌ Prezenta este oprita.', flags: 64 });
+                        return interaction.reply({
+                            content: '❌ Prezenta este oprita.',
+                            flags: 64
+                        });
                     }
 
                     if (!participants.includes(interaction.user.id)) {
@@ -399,37 +516,72 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 if (interaction.customId === 'actiune_nu_particip') {
+
                     if (prezentaOprita || actiuneInchisa) {
-                        return interaction.reply({ content: '❌ Prezenta este oprita.', flags: 64 });
+                        return interaction.reply({
+                            content: '❌ Prezenta este oprita.',
+                            flags: 64
+                        });
                     }
 
                     participants = participants.filter(id => id !== interaction.user.id);
                 }
 
                 if (interaction.customId === 'actiune_stop_prezenta') {
+
                     if (!isAdmin) {
-                        return interaction.reply({ content: '❌ Doar administratorii pot opri prezenta.', flags: 64 });
+                        return interaction.reply({
+                            content: '❌ Doar administratorii pot opri prezenta.',
+                            flags: 64
+                        });
                     }
 
-                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
+                    desc = desc.replace(
+                        '🟢 **Prezenta:** DESCHISA',
+                        '⛔ **Prezenta:** OPRITA'
+                    );
                 }
 
                 if (interaction.customId === 'actiune_inchide') {
+
                     if (!isAdmin) {
-                        return interaction.reply({ content: '❌ Doar administratorii pot inchide actiunea.', flags: 64 });
+                        return interaction.reply({
+                            content: '❌ Doar administratorii pot inchide actiunea.',
+                            flags: 64
+                        });
                     }
 
-                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
-                    desc = desc.replace('🟡 **Status:** IN DESFASURARE', '🔒 **Status:** INCHISA');
+                    desc = desc.replace(
+                        '🟢 **Prezenta:** DESCHISA',
+                        '⛔ **Prezenta:** OPRITA'
+                    );
+
+                    desc = desc.replace(
+                        '🟡 **Status:** IN DESFASURARE',
+                        '🔒 **Status:** INCHISA'
+                    );
+
                     desc += `\n🔒 **Inchisa la:** ${dataOraRo()}`;
 
-                    embed.setTitle("--------------- ● ACTIUNE O'JASTEMMA - INCHISA ● ---------------");
+                    embed.setTitle(
+                        "--------------- ● ACTIUNE O'JASTEMMA - INCHISA ● ---------------"
+                    );
+
                     embed.setColor(0xed4245);
 
-                    const lista = participants.length ? participants.map(id => `<@${id}>`).join(', ') : 'N/A';
+                    const lista = participants.length
+                        ? participants.map(id => `<@${id}>`).join(', ')
+                        : 'N/A';
 
-                    desc = desc.replace(/👥 \*\*Total participanti:\*\* .*/g, `👥 **Total participanti:** ${participants.length}`);
-                    desc = desc.replace(/📋 \*\*Participanti:\*\* .*/g, `📋 **Participanti:** ${lista}`);
+                    desc = desc.replace(
+                        /👥 \*\*Total participanti:\*\* .*/g,
+                        `👥 **Total participanti:** ${participants.length}`
+                    );
+
+                    desc = desc.replace(
+                        /📋 \*\*Participanti:\*\* .*/g,
+                        `📋 **Participanti:** ${lista}`
+                    );
 
                     embed.setDescription(desc);
 
@@ -439,17 +591,30 @@ client.on('interactionCreate', async interaction => {
                     });
                 }
 
-                const lista = participants.length ? participants.map(id => `<@${id}>`).join(', ') : 'N/A';
+                const lista = participants.length
+                    ? participants.map(id => `<@${id}>`).join(', ')
+                    : 'N/A';
 
-                desc = desc.replace(/👥 \*\*Total participanti:\*\* .*/g, `👥 **Total participanti:** ${participants.length}`);
-                desc = desc.replace(/📋 \*\*Participanti:\*\* .*/g, `📋 **Participanti:** ${lista}`);
+                desc = desc.replace(
+                    /👥 \*\*Total participanti:\*\* .*/g,
+                    `👥 **Total participanti:** ${participants.length}`
+                );
+
+                desc = desc.replace(
+                    /📋 \*\*Participanti:\*\* .*/g,
+                    `📋 **Participanti:** ${lista}`
+                );
 
                 embed.setDescription(desc);
 
-                return interaction.update({ embeds: [embed] });
+                return interaction.update({
+                    embeds: [embed]
+                });
             }
 
+            // APROBARE / RESPINGERE CERERI
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+
                 return interaction.reply({
                     content: '❌ Nu ai acces la aceasta actiune.',
                     flags: 64
@@ -457,6 +622,7 @@ client.on('interactionCreate', async interaction => {
             }
 
             const approved = interaction.customId.startsWith('accept_');
+
             const embed = EmbedBuilder.from(interaction.message.embeds[0]);
             const oldDescription = embed.data.description || '';
 
@@ -473,7 +639,11 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 🗓️ **${approved ? 'Acceptata' : 'Respinsa'} pe:** ${dataRo()}`
             );
 
-            embed.setColor(approved ? 0x57f287 : 0xed4245);
+            embed.setColor(
+                approved
+                    ? 0x57f287
+                    : 0xed4245
+            );
 
             return interaction.update({
                 embeds: [embed],
@@ -483,100 +653,52 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 
         if (!interaction.isChatInputCommand()) return;
 
-        const isCraft = interaction.commandName === 'craft';
+        const ephemeralCraft = interaction.commandName === 'craft';
 
-        if (isCraft) {
+        if (ephemeralCraft) {
             await interaction.deferReply({ flags: 64 });
         } else {
             await interaction.deferReply();
         }
 
-        if (interaction.commandName === 'craft') {
-            if (interaction.channel.id !== CRAFT_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda doar in canalul de craft.');
-            }
-
-            const categorie = interaction.options.getString('categorie');
-            const item = interaction.options.getString('item');
-            const cantitate = interaction.options.getInteger('cantitate');
-            const procentSpalare = interaction.options.getNumber('procent_spalare') ?? 100;
-
-            if (cantitate <= 0) {
-                return interaction.editReply('❌ Cantitatea trebuie sa fie mai mare decat 0.');
-            }
-
-            const droguri = ['cocaina', 'crack', 'tigari'];
-            const arme = ['pistol', 'pistolmk2', 'pistol50', 'microsmg', 'machinepistol', 'compactrifle', 'gusenberg'];
-
-            if (categorie === 'droguri' && !droguri.includes(item)) {
-                return interaction.editReply('❌ Ai ales categoria Droguri, dar itemul nu este drog.');
-            }
-
-            if (categorie === 'arme' && !arme.includes(item)) {
-                return interaction.editReply('❌ Ai ales categoria Arme, dar itemul nu este arma.');
-            }
-
-            let result = null;
-
-            if (categorie === 'droguri') {
-                result = craftDroguri(item, cantitate, procentSpalare);
-            }
-
-            if (categorie === 'arme') {
-                result = craftArme(item, cantitate);
-            }
-
-            if (!result) {
-                return interaction.editReply('❌ Craft invalid.');
-            }
-
-            const embed = new EmbedBuilder()
-                .setColor(0xc49a5a)
-                .setTitle(result.title)
-                .setDescription(result.description)
-                .setFooter({ text: `O' Jastemma • Calculator Craft` })
-                .setTimestamp();
-
-            await interaction.editReply({ embeds: [embed] });
-
-            setTimeout(async () => {
-                try {
-                    await interaction.deleteReply();
-                } catch {}
-            }, 600000);
-
-            return;
-        }
-
+        // /me
         if (interaction.commandName === 'me') {
+
             if (interaction.channel.id !== CHAT_IC_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #chat-ic');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #chat-ic'
+                );
             }
 
             const text = interaction.options.getString('text');
-            return interaction.editReply(`💬 ***${interaction.user.username}*** spune: ***${text}***`);
-        }
 
+            return interaction.editReply(
+                `💬 ***${interaction.user.username}*** spune: ***${text}***`
+            );
+        }
+                // /sanctiune
         if (interaction.commandName === 'sanctiune') {
+
             if (interaction.channel.id !== SANCTIUNI_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #sanctiuni');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #sanctiuni'
+                );
             }
 
             const persoana = interaction.options.getUser('persoana');
             const sanctiune = interaction.options.getString('sanctiune');
             const motiv = interaction.options.getString('motiv');
-            const amenda = interaction.options.getString('amenda') || 'N/A';
-            const dovezi = interaction.options.getString('dovezi') || 'N/A';
 
-            const embed = createEmbed('🔴 Sanctiune - IN ASTEPTARE', 0xfee75c, persoana)
-                .setDescription(
+            const embed = createEmbed(
+                '🔴 Sanctiune - IN ASTEPTARE',
+                0xfee75c,
+                persoana
+            ).setDescription(
 `📅 **Data:** ${dataRo()}
 👤 **Persoana sanctionata:** ${persoana}
 ⚠️ **Sanctiune:** ${sanctiune}
-💸 **Amenda:** ${amenda}
-📋 **Motiv:** ${motiv}
-📎 **Dovezi:** ${dovezi}`
-                );
+📋 **Motiv:** ${motiv}`
+            );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -584,78 +706,161 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
+        // /demisie - formular
         if (interaction.commandName === 'demisie') {
+
             if (interaction.channel.id !== CERERE_DEMISIE_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-demisie');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #cerere-demisie'
+                );
             }
 
-            const embed = createEmbed('📄 Cerere Demisie - IN ASTEPTARE', 0xfee75c, interaction.user)
-                .setDescription(
-`👤 **Nume:** ${interaction.options.getString('nume')}
-🪪 **CNP:** ${interaction.options.getString('cnp')}
-📋 **Motiv:** ${interaction.options.getString('motiv')}
-📅 **Zile:** ${interaction.options.getString('zile')}
-🎖️ **Rank:** ${interaction.options.getString('rank')}`
-                );
+            const modal = new ModalBuilder()
+                .setCustomId('modal_demisie')
+                .setTitle('Cerere Demisie');
 
-            return interaction.editReply({
-                embeds: [embed],
-                components: [createButtons('demisie')]
-            });
+            const nume = new TextInputBuilder()
+                .setCustomId('nume')
+                .setLabel('Nume IC')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const cnp = new TextInputBuilder()
+                .setCustomId('cnp')
+                .setLabel('CNP')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const motiv = new TextInputBuilder()
+                .setCustomId('motiv')
+                .setLabel('Motiv')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true);
+
+            const zile = new TextInputBuilder()
+                .setCustomId('zile')
+                .setLabel('Zile')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const rank = new TextInputBuilder()
+                .setCustomId('rank')
+                .setLabel('Rank')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(nume),
+                new ActionRowBuilder().addComponents(cnp),
+                new ActionRowBuilder().addComponents(motiv),
+                new ActionRowBuilder().addComponents(zile),
+                new ActionRowBuilder().addComponents(rank)
+            );
+
+            return interaction.showModal(modal);
         }
 
-        if (interaction.commandName === 'cerereinactivitate') {
+        // /concediu - formular
+        if (interaction.commandName === 'concediu') {
+
             if (interaction.channel.id !== CERERE_INACTIVITATE_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-inactivitate');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #cerere-inactivitate'
+                );
             }
 
-            const embed = createEmbed('🟡 Cerere Inactivitate - IN ASTEPTARE', 0xfee75c, interaction.user)
-                .setDescription(
-`📆 **Perioada:** ${interaction.options.getString('perioada')}
-🔢 **Numar zile:** ${interaction.options.getString('zile')}
-📋 **Motiv:** ${interaction.options.getString('motiv')}
-📌 **Detalii:** ${interaction.options.getString('detalii') || 'N/A'}`
-                );
+            const modal = new ModalBuilder()
+                .setCustomId('modal_concediu')
+                .setTitle('Cerere Concediu');
 
-            return interaction.editReply({
-                embeds: [embed],
-                components: [createButtons('inactivitate')]
-            });
+            const perioada = new TextInputBuilder()
+                .setCustomId('perioada')
+                .setLabel('Perioada')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const zile = new TextInputBuilder()
+                .setCustomId('zile')
+                .setLabel('Numar zile')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const motiv = new TextInputBuilder()
+                .setCustomId('motiv')
+                .setLabel('Motiv')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true);
+
+            const detalii = new TextInputBuilder()
+                .setCustomId('detalii')
+                .setLabel('Detalii')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(false);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(perioada),
+                new ActionRowBuilder().addComponents(zile),
+                new ActionRowBuilder().addComponents(motiv),
+                new ActionRowBuilder().addComponents(detalii)
+            );
+
+            return interaction.showModal(modal);
         }
 
+        // /invoiresedinta - formular
         if (interaction.commandName === 'invoiresedinta') {
+
             if (interaction.channel.id !== CERERE_INACTIVITATE_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-inactivitate');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #cerere-inactivitate'
+                );
             }
 
-            const embed = createEmbed('🟡 Cerere Invoire Sedinta - IN ASTEPTARE', 0xfee75c, interaction.user)
-                .setDescription(
-`👤 **Utilizator:** ${interaction.user}
-📅 **Data sedintei:** ${interaction.options.getString('data')}
-📋 **Motiv:** ${interaction.options.getString('motiv')}`
-                );
+            const modal = new ModalBuilder()
+                .setCustomId('modal_invoiresedinta')
+                .setTitle('Invoire Sedinta');
 
-            return interaction.editReply({
-                embeds: [embed],
-                components: [createButtons('invoiresedinta')]
-            });
+            const data = new TextInputBuilder()
+                .setCustomId('data')
+                .setLabel('Data sedintei')
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+
+            const motiv = new TextInputBuilder()
+                .setCustomId('motiv')
+                .setLabel('Motiv')
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(data),
+                new ActionRowBuilder().addComponents(motiv)
+            );
+
+            return interaction.showModal(modal);
         }
-
+                // /seif
         if (interaction.commandName === 'seif') {
+
             if (interaction.channel.id !== SEIF_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #seif');
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #seif'
+                );
             }
 
             const actiune = interaction.options.getString('actiune');
 
-            const embed = createEmbed(`💰 ${actiune} Seif - IN ASTEPTARE`, 0xfee75c, interaction.user)
-                .setDescription(
+            const embed = createEmbed(
+                `💰 ${actiune} Seif - IN ASTEPTARE`,
+                0xfee75c,
+                interaction.user
+            ).setDescription(
 `📦 **Actiune:** ${actiune}
 👤 **Nume IC:** ${interaction.options.getString('numeic')}
 🪪 **CNP:** ${interaction.options.getString('cnp')}
 💵 **Suma/Materiale:** ${interaction.options.getString('suma')}
 📎 **Dovada:** ${interaction.options.getString('dovada')}`
-                );
+            );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -663,13 +868,13 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
+        // /anunt
         if (interaction.commandName === 'anunt') {
-            if (interaction.channel.id !== ANUNTURI_IC_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #anunturi-ic');
-            }
 
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.editReply('❌ Doar administratorii pot folosi aceasta comanda.');
+            if (interaction.channel.id !== ANUNTURI_IC_ID) {
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #anunturi-ic'
+                );
             }
 
             const text = interaction.options.getString('text');
@@ -682,20 +887,22 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
+        // /actiune
         if (interaction.commandName === 'actiune') {
-            if (interaction.channel.id !== ANUNTURI_IC_ID) {
-                return interaction.editReply('❌ Foloseste aceasta comanda in #anunturi-ic');
-            }
 
-            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.editReply('❌ Doar administratorii pot folosi aceasta comanda.');
+            if (interaction.channel.id !== ANUNTURI_IC_ID) {
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda in #anunturi-ic'
+                );
             }
 
             const locatie = interaction.options.getString('locatie');
 
             const embed = new EmbedBuilder()
                 .setColor(0x57f287)
-                .setTitle("--------------- ● ACTIUNE O'JASTEMMA - IN DESFASURARE ● ---------------")
+                .setTitle(
+                    "--------------- ● ACTIUNE O'JASTEMMA - IN DESFASURARE ● ---------------"
+                )
                 .setDescription(
 `🕘 **Initiere:** ${dataOraRo()}
 🛡️ **Locatie:** ${locatie}
@@ -705,9 +912,15 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 🟢 **Prezenta:** DESCHISA
 🟡 **Status:** IN DESFASURARE`
                 )
-                .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }));
+                .setThumbnail(
+                    interaction.user.displayAvatarURL({
+                        dynamic: true,
+                        size: 1024
+                    })
+                );
 
             const row = new ActionRowBuilder().addComponents(
+
                 new ButtonBuilder()
                     .setCustomId('actiune_particip')
                     .setLabel('Particip')
@@ -731,6 +944,7 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
                     .setLabel('Inchide actiunea')
                     .setEmoji('🔒')
                     .setStyle(ButtonStyle.Primary)
+
             );
 
             return interaction.editReply({
@@ -739,7 +953,75 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
+        // /craft
+        if (interaction.commandName === 'craft') {
+
+            if (interaction.channel.id !== CRAFT_ID) {
+                return interaction.editReply(
+                    '❌ Foloseste aceasta comanda doar in canalul de craft.'
+                );
+            }
+
+            const tip = interaction.options.getString('tip');
+            const cantitate = interaction.options.getInteger('cantitate');
+            const procentSpalare =
+                interaction.options.getNumber('procent_spalare') ?? 25;
+
+            if (cantitate <= 0) {
+                return interaction.editReply(
+                    '❌ Cantitatea trebuie sa fie mai mare decat 0.'
+                );
+            }
+
+            const droguri = ['cocaina', 'crack', 'tigari'];
+            const arme = [
+                'pistol',
+                'pistolmk2',
+                'pistol50',
+                'microsmg',
+                'machinepistol',
+                'compactrifle',
+                'gusenberg'
+            ];
+
+            let result = null;
+
+            if (droguri.includes(tip)) {
+                result = craftDroguri(tip, cantitate, procentSpalare);
+            }
+
+            if (arme.includes(tip)) {
+                result = craftArme(tip, cantitate);
+            }
+
+            if (!result) {
+                return interaction.editReply('❌ Tip de craft invalid.');
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor(0xc49a5a)
+                .setTitle(result.title)
+                .setDescription(result.description)
+                .setFooter({
+                    text: `O' Jastemma • Calculator Craft`
+                })
+                .setTimestamp();
+
+            await interaction.editReply({
+                embeds: [embed]
+            });
+
+            setTimeout(async () => {
+                try {
+                    await interaction.deleteReply();
+                } catch {}
+            }, 600000);
+
+            return;
+        }
+
     } catch (error) {
+
         if (error.code === 10062) {
             console.log('Interactiune expirata.');
             return;
@@ -748,8 +1030,77 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
         console.error(error);
     }
 });
+client.on('interactionCreate', async interaction => {
+
+    try {
+
+        // FORMULAR DEMISIE
+        if (interaction.isModalSubmit() && interaction.customId === 'modal_demisie') {
+
+            const embed = createEmbed(
+                '📄 Cerere Demisie - IN ASTEPTARE',
+                0xfee75c,
+                interaction.user
+            ).setDescription(
+`👤 **Nume:** ${interaction.fields.getTextInputValue('nume')}
+🪪 **CNP:** ${interaction.fields.getTextInputValue('cnp')}
+📋 **Motiv:** ${interaction.fields.getTextInputValue('motiv')}
+📅 **Zile:** ${interaction.fields.getTextInputValue('zile')}
+🎖️ **Rank:** ${interaction.fields.getTextInputValue('rank')}`
+            );
+
+            return interaction.reply({
+                embeds: [embed],
+                components: [createButtons('demisie')]
+            });
+        }
+
+        // FORMULAR CONCEDIU
+        if (interaction.isModalSubmit() && interaction.customId === 'modal_concediu') {
+
+            const embed = createEmbed(
+                '🟡 Cerere Concediu - IN ASTEPTARE',
+                0xfee75c,
+                interaction.user
+            ).setDescription(
+`📆 **Perioada:** ${interaction.fields.getTextInputValue('perioada')}
+🔢 **Numar zile:** ${interaction.fields.getTextInputValue('zile')}
+📋 **Motiv:** ${interaction.fields.getTextInputValue('motiv')}
+📌 **Detalii:** ${interaction.fields.getTextInputValue('detalii') || 'N/A'}`
+            );
+
+            return interaction.reply({
+                embeds: [embed],
+                components: [createButtons('concediu')]
+            });
+        }
+
+        // FORMULAR INVOIRE SEDINTA
+        if (interaction.isModalSubmit() && interaction.customId === 'modal_invoiresedinta') {
+
+            const embed = createEmbed(
+                '🟡 Cerere Invoire Sedinta - IN ASTEPTARE',
+                0xfee75c,
+                interaction.user
+            ).setDescription(
+`👤 **Utilizator:** ${interaction.user}
+📅 **Data sedintei:** ${interaction.fields.getTextInputValue('data')}
+📋 **Motiv:** ${interaction.fields.getTextInputValue('motiv')}`
+            );
+
+            return interaction.reply({
+                embeds: [embed],
+                components: [createButtons('invoiresedinta')]
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+});
 
 client.on('messageCreate', async message => {
+
     if (message.author.bot) return;
 
     const protectedChannels = [
