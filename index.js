@@ -42,9 +42,7 @@ function dataOraRo() {
 }
 
 function createButtons(type) {
-
     return new ActionRowBuilder().addComponents(
-
         new ButtonBuilder()
             .setCustomId(`accept_${type}`)
             .setLabel('Aprobat')
@@ -56,139 +54,55 @@ function createButtons(type) {
             .setLabel('Respins')
             .setEmoji('❌')
             .setStyle(ButtonStyle.Danger)
-
     );
 }
 
 function createEmbed(title, color, user) {
-
     return new EmbedBuilder()
         .setColor(color)
         .setTitle(title)
-        .setThumbnail(
-            user.displayAvatarURL({
-                dynamic: true,
-                size: 1024
-            })
-        )
-        .setFooter({
-            text: `O' Jastemma • ${user.username}`
-        });
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setFooter({ text: `O' Jastemma • ${user.username}` });
 }
 
 const commands = [
-
-    // /me
     new SlashCommandBuilder()
         .setName('me')
         .setDescription('Actiune roleplay')
-        .addStringOption(o =>
-            o.setName('text')
-                .setDescription('Text')
-                .setRequired(true)
-        ),
+        .addStringOption(o => o.setName('text').setDescription('Text').setRequired(true)),
 
-    // /sanctiune
     new SlashCommandBuilder()
         .setName('sanctiune')
         .setDescription('Acorda o sanctiune')
-        .addUserOption(o =>
-            o.setName('persoana')
-                .setDescription('Persoana sanctionata')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('sanctiune')
-                .setDescription('Tip sanctiune')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('motiv')
-                .setDescription('Motiv')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('amenda')
-                .setDescription('Amenda')
-                .setRequired(false)
-        )
-        .addStringOption(o =>
-            o.setName('dovezi')
-                .setDescription('Dovezi')
-                .setRequired(false)
-        ),
+        .addUserOption(o => o.setName('persoana').setDescription('Persoana sanctionata').setRequired(true))
+        .addStringOption(o => o.setName('sanctiune').setDescription('Tip sanctiune').setRequired(true))
+        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
+        .addStringOption(o => o.setName('amenda').setDescription('Amenda').setRequired(false))
+        .addStringOption(o => o.setName('dovezi').setDescription('Dovezi').setRequired(false)),
 
-    // /demisie
     new SlashCommandBuilder()
         .setName('demisie')
         .setDescription('Cerere demisie')
-        .addStringOption(o =>
-            o.setName('nume')
-                .setDescription('Nume IC')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('cnp')
-                .setDescription('CNP')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('motiv')
-                .setDescription('Motiv')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('zile')
-                .setDescription('Zile')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('rank')
-                .setDescription('Rank')
-                .setRequired(true)
-        ),
+        .addStringOption(o => o.setName('nume').setDescription('Nume IC').setRequired(true))
+        .addStringOption(o => o.setName('cnp').setDescription('CNP').setRequired(true))
+        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
+        .addStringOption(o => o.setName('zile').setDescription('Zile').setRequired(true))
+        .addStringOption(o => o.setName('rank').setDescription('Rank').setRequired(true)),
 
-    // /cerereinactivitate
     new SlashCommandBuilder()
         .setName('cerereinactivitate')
         .setDescription('Cerere inactivitate')
-        .addStringOption(o =>
-            o.setName('perioada')
-                .setDescription('Perioada')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('zile')
-                .setDescription('Numar zile')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('motiv')
-                .setDescription('Motiv')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('detalii')
-                .setDescription('Detalii')
-                .setRequired(false)
-        ),
+        .addStringOption(o => o.setName('perioada').setDescription('Perioada').setRequired(true))
+        .addStringOption(o => o.setName('zile').setDescription('Numar zile').setRequired(true))
+        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true))
+        .addStringOption(o => o.setName('detalii').setDescription('Detalii').setRequired(false)),
 
-    // /invoiresedinta
     new SlashCommandBuilder()
         .setName('invoiresedinta')
         .setDescription('Cerere invoire sedinta')
-        .addStringOption(o =>
-            o.setName('data')
-                .setDescription('Data sedintei')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('motiv')
-                .setDescription('Motiv')
-                .setRequired(true)
-        ),
+        .addStringOption(o => o.setName('data').setDescription('Data sedintei').setRequired(true))
+        .addStringOption(o => o.setName('motiv').setDescription('Motiv').setRequired(true)),
 
-    // /seif
     new SlashCommandBuilder()
         .setName('seif')
         .setDescription('Gestionare seif')
@@ -201,62 +115,31 @@ const commands = [
                     { name: 'Retragere', value: 'Retragere' }
                 )
         )
-        .addStringOption(o =>
-            o.setName('numeic')
-                .setDescription('Nume IC')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('cnp')
-                .setDescription('CNP')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('suma')
-                .setDescription('Suma/materiale')
-                .setRequired(true)
-        )
-        .addStringOption(o =>
-            o.setName('dovada')
-                .setDescription('Dovada')
-                .setRequired(true)
-        ),
+        .addStringOption(o => o.setName('numeic').setDescription('Nume IC').setRequired(true))
+        .addStringOption(o => o.setName('cnp').setDescription('CNP').setRequired(true))
+        .addStringOption(o => o.setName('suma').setDescription('Suma/materiale').setRequired(true))
+        .addStringOption(o => o.setName('dovada').setDescription('Dovada').setRequired(true)),
 
-    // /anunt
     new SlashCommandBuilder()
         .setName('anunt')
         .setDescription('Anunt IC')
-        .addStringOption(o =>
-            o.setName('text')
-                .setDescription('Text anunt')
-                .setRequired(true)
-        ),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addStringOption(o => o.setName('text').setDescription('Text anunt').setRequired(true)),
 
-    // /actiune
     new SlashCommandBuilder()
         .setName('actiune')
         .setDescription("Creeaza o actiune O'Jastemma")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addStringOption(o =>
-            o.setName('locatie')
-                .setDescription('Locatia actiunii')
-                .setRequired(true)
-        )
-
+        .addStringOption(o => o.setName('locatie').setDescription('Locatia actiunii').setRequired(true))
 ].map(c => c.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 client.once('ready', async () => {
-
     console.log(`✅ Bot online: ${client.user.tag}`);
 
     try {
-
-        await rest.put(
-            Routes.applicationCommands(client.user.id),
-            { body: [] }
-        );
+        await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
 
         await rest.put(
             Routes.applicationGuildCommands(client.user.id, GUILD_ID),
@@ -264,52 +147,28 @@ client.once('ready', async () => {
         );
 
         console.log('✅ Slash commands loaded.');
-
     } catch (error) {
         console.error(error);
     }
 });
 
 client.on('interactionCreate', async interaction => {
-
     try {
-
-        // BUTOANE
         if (interaction.isButton()) {
-
-            // SISTEM ACTIUNE
             if (interaction.customId.startsWith('actiune_')) {
-
                 const embed = EmbedBuilder.from(interaction.message.embeds[0]);
-
                 let desc = embed.data.description || '';
 
-                const isAdmin = interaction.member.permissions.has(
-                    PermissionFlagsBits.Administrator
-                );
-
-                const mentions = [...desc.matchAll(/<@!?(\d+)>/g)]
-                    .map(m => m[1]);
-
+                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const mentions = [...desc.matchAll(/<@!?(\d+)>/g)].map(m => m[1]);
                 let participants = [...new Set(mentions)];
 
-                const prezentaOprita = desc.includes(
-                    '⛔ **Prezenta:** OPRITA'
-                );
+                const prezentaOprita = desc.includes('⛔ **Prezenta:** OPRITA');
+                const actiuneInchisa = desc.includes('🔒 **Status:** INCHISA');
 
-                const actiuneInchisa = desc.includes(
-                    '🔒 **Status:** INCHISA'
-                );
-
-                // PARTICIP
                 if (interaction.customId === 'actiune_particip') {
-
                     if (prezentaOprita || actiuneInchisa) {
-
-                        return interaction.reply({
-                            content: '❌ Prezenta este oprita.',
-                            ephemeral: true
-                        });
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
                     }
 
                     if (!participants.includes(interaction.user.id)) {
@@ -317,82 +176,58 @@ client.on('interactionCreate', async interaction => {
                     }
                 }
 
-                // NU PARTICIP
                 if (interaction.customId === 'actiune_nu_particip') {
+                    if (prezentaOprita || actiuneInchisa) {
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
+                    }
 
-                    participants = participants.filter(
-                        id => id !== interaction.user.id
-                    );
+                    participants = participants.filter(id => id !== interaction.user.id);
                 }
 
-                // STOP PREZENTA
                 if (interaction.customId === 'actiune_stop_prezenta') {
-
                     if (!isAdmin) {
-
-                        return interaction.reply({
-                            content: '❌ Doar administratorii pot opri prezenta.',
-                            ephemeral: true
-                        });
+                        return interaction.reply({ content: '❌ Doar administratorii pot opri prezenta.', ephemeral: true });
                     }
 
-                    desc = desc.replace(
-                        '🟢 **Prezenta:** DESCHISA',
-                        '⛔ **Prezenta:** OPRITA'
-                    );
+                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
                 }
 
-                // INCHIDE ACTIUNE
                 if (interaction.customId === 'actiune_inchide') {
-
                     if (!isAdmin) {
-
-                        return interaction.reply({
-                            content: '❌ Doar administratorii pot inchide actiunea.',
-                            ephemeral: true
-                        });
+                        return interaction.reply({ content: '❌ Doar administratorii pot inchide actiunea.', ephemeral: true });
                     }
 
-                    desc = desc.replace(
-                        '🟡 **Status:** IN DESFASURARE',
-                        '🔒 **Status:** INCHISA'
-                    );
-
+                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
+                    desc = desc.replace('🟡 **Status:** IN DESFASURARE', '🔒 **Status:** INCHISA');
                     desc += `\n🔒 **Inchisa la:** ${dataOraRo()}`;
 
-                    embed.setTitle(
-                        "--------------- ● ACTIUNE O'JASTEMMA - INCHISA ● ---------------"
-                    );
-
+                    embed.setTitle("--------------- ● ACTIUNE O'JASTEMMA - INCHISA ● ---------------");
                     embed.setColor(0xed4245);
+
+                    const lista = participants.length ? participants.map(id => `<@${id}>`).join(', ') : 'N/A';
+
+                    desc = desc.replace(/👥 \*\*Total participanti:\*\* .*/g, `👥 **Total participanti:** ${participants.length}`);
+                    desc = desc.replace(/📋 \*\*Participanti:\*\* .*/g, `📋 **Participanti:** ${lista}`);
+
+                    embed.setDescription(desc);
+
+                    return interaction.update({
+                        embeds: [embed],
+                        components: []
+                    });
                 }
 
-                const lista = participants.length
-                    ? participants.map(id => `<@${id}>`).join(', ')
-                    : 'N/A';
+                const lista = participants.length ? participants.map(id => `<@${id}>`).join(', ') : 'N/A';
 
-                desc = desc.replace(
-                    /👥 \*\*Total participanti:\*\* .*/g,
-                    `👥 **Total participanti:** ${participants.length}`
-                );
-
-                desc = desc.replace(
-                    /📋 \*\*Participanti:\*\* .*/g,
-                    `📋 **Participanti:** ${lista}`
-                );
+                desc = desc.replace(/👥 \*\*Total participanti:\*\* .*/g, `👥 **Total participanti:** ${participants.length}`);
+                desc = desc.replace(/📋 \*\*Participanti:\*\* .*/g, `📋 **Participanti:** ${lista}`);
 
                 embed.setDescription(desc);
 
-                return interaction.update({
-                    embeds: [embed]
-                });
+                return interaction.update({ embeds: [embed] });
             }
 
-            // APROBARE/RESPINGERE
-            if (!interaction.member.permissions.has(
-                PermissionFlagsBits.Administrator
-            )) {
-
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: '❌ Nu ai acces la aceasta actiune.',
                     ephemeral: true
@@ -400,11 +235,7 @@ client.on('interactionCreate', async interaction => {
             }
 
             const approved = interaction.customId.startsWith('accept_');
-
-            const embed = EmbedBuilder.from(
-                interaction.message.embeds[0]
-            );
-
+            const embed = EmbedBuilder.from(interaction.message.embeds[0]);
             const oldDescription = embed.data.description || '';
 
             embed.setTitle(
@@ -420,11 +251,7 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 🗓️ **${approved ? 'Acceptata' : 'Respinsa'} pe:** ${dataRo()}`
             );
 
-            embed.setColor(
-                approved
-                    ? 0x57f287
-                    : 0xed4245
-            );
+            embed.setColor(approved ? 0x57f287 : 0xed4245);
 
             return interaction.update({
                 embeds: [embed],
@@ -436,31 +263,18 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 
         await interaction.deferReply();
 
-        // /me
         if (interaction.commandName === 'me') {
-
             if (interaction.channel.id !== CHAT_IC_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #chat-ic'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #chat-ic');
             }
 
             const text = interaction.options.getString('text');
-
-            return interaction.editReply(
-                `💬 ***${interaction.user.username}*** spune: ***${text}***`
-            );
+            return interaction.editReply(`💬 ***${interaction.user.username}*** spune: ***${text}***`);
         }
 
-        // /sanctiune
         if (interaction.commandName === 'sanctiune') {
-
             if (interaction.channel.id !== SANCTIUNI_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #sanctiuni'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #sanctiuni');
             }
 
             const persoana = interaction.options.getUser('persoana');
@@ -469,18 +283,15 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             const amenda = interaction.options.getString('amenda') || 'N/A';
             const dovezi = interaction.options.getString('dovezi') || 'N/A';
 
-            const embed = createEmbed(
-                '🔴 Sanctiune - IN ASTEPTARE',
-                0xfee75c,
-                persoana
-            ).setDescription(
+            const embed = createEmbed('🔴 Sanctiune - IN ASTEPTARE', 0xfee75c, persoana)
+                .setDescription(
 `📅 **Data:** ${dataRo()}
 👤 **Persoana sanctionata:** ${persoana}
 ⚠️ **Sanctiune:** ${sanctiune}
 💸 **Amenda:** ${amenda}
 📋 **Motiv:** ${motiv}
 📎 **Dovezi:** ${dovezi}`
-            );
+                );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -488,27 +299,19 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
-        // /demisie
         if (interaction.commandName === 'demisie') {
-
             if (interaction.channel.id !== CERERE_DEMISIE_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #cerere-demisie'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-demisie');
             }
 
-            const embed = createEmbed(
-                '📄 Cerere Demisie - IN ASTEPTARE',
-                0xfee75c,
-                interaction.user
-            ).setDescription(
+            const embed = createEmbed('📄 Cerere Demisie - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `👤 **Nume:** ${interaction.options.getString('nume')}
 🪪 **CNP:** ${interaction.options.getString('cnp')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}
 📅 **Zile:** ${interaction.options.getString('zile')}
 🎖️ **Rank:** ${interaction.options.getString('rank')}`
-            );
+                );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -516,26 +319,18 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
-        // /cerereinactivitate
         if (interaction.commandName === 'cerereinactivitate') {
-
             if (interaction.channel.id !== CERERE_INACTIVITATE_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #cerere-inactivitate'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-inactivitate');
             }
 
-            const embed = createEmbed(
-                '🟡 Cerere Inactivitate - IN ASTEPTARE',
-                0xfee75c,
-                interaction.user
-            ).setDescription(
+            const embed = createEmbed('🟡 Cerere Inactivitate - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `📆 **Perioada:** ${interaction.options.getString('perioada')}
 🔢 **Numar zile:** ${interaction.options.getString('zile')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}
 📌 **Detalii:** ${interaction.options.getString('detalii') || 'N/A'}`
-            );
+                );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -543,25 +338,17 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
-        // /invoiresedinta
         if (interaction.commandName === 'invoiresedinta') {
-
             if (interaction.channel.id !== CERERE_INACTIVITATE_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #cerere-inactivitate'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #cerere-inactivitate');
             }
 
-            const embed = createEmbed(
-                '🟡 Cerere Invoire Sedinta - IN ASTEPTARE',
-                0xfee75c,
-                interaction.user
-            ).setDescription(
+            const embed = createEmbed('🟡 Cerere Invoire Sedinta - IN ASTEPTARE', 0xfee75c, interaction.user)
+                .setDescription(
 `👤 **Utilizator:** ${interaction.user}
 📅 **Data sedintei:** ${interaction.options.getString('data')}
 📋 **Motiv:** ${interaction.options.getString('motiv')}`
-            );
+                );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -569,29 +356,21 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
-        // /seif
         if (interaction.commandName === 'seif') {
-
             if (interaction.channel.id !== SEIF_ID) {
-
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #seif'
-                );
+                return interaction.editReply('❌ Foloseste aceasta comanda in #seif');
             }
 
             const actiune = interaction.options.getString('actiune');
 
-            const embed = createEmbed(
-                `💰 ${actiune} Seif - IN ASTEPTARE`,
-                0xfee75c,
-                interaction.user
-            ).setDescription(
+            const embed = createEmbed(`💰 ${actiune} Seif - IN ASTEPTARE`, 0xfee75c, interaction.user)
+                .setDescription(
 `📦 **Actiune:** ${actiune}
 👤 **Nume IC:** ${interaction.options.getString('numeic')}
 🪪 **CNP:** ${interaction.options.getString('cnp')}
 💵 **Suma/Materiale:** ${interaction.options.getString('suma')}
 📎 **Dovada:** ${interaction.options.getString('dovada')}`
-            );
+                );
 
             return interaction.editReply({
                 embeds: [embed],
@@ -599,40 +378,39 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
             });
         }
 
-        // /anunt
         if (interaction.commandName === 'anunt') {
-
             if (interaction.channel.id !== ANUNTURI_IC_ID) {
+                return interaction.editReply('❌ Foloseste aceasta comanda in #anunturi-ic');
+            }
 
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #anunturi-ic'
-                );
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.editReply('❌ Doar administratorii pot folosi aceasta comanda.');
             }
 
             const text = interaction.options.getString('text');
 
-            return interaction.editReply(
-                `📢 **ANUNT O' JASTEMMA**\n\n${text}`
-            );
+            return interaction.editReply({
+                content: `📢 **ANUNT O' JASTEMMA**\n\n${text}`,
+                allowedMentions: {
+                    parse: ['users', 'roles', 'everyone']
+                }
+            });
         }
 
-        // /actiune
         if (interaction.commandName === 'actiune') {
-
             if (interaction.channel.id !== ANUNTURI_IC_ID) {
+                return interaction.editReply('❌ Foloseste aceasta comanda in #anunturi-ic');
+            }
 
-                return interaction.editReply(
-                    '❌ Foloseste aceasta comanda in #anunturi-ic'
-                );
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.editReply('❌ Doar administratorii pot folosi aceasta comanda.');
             }
 
             const locatie = interaction.options.getString('locatie');
 
             const embed = new EmbedBuilder()
                 .setColor(0x57f287)
-                .setTitle(
-                    "--------------- ● ACTIUNE O'JASTEMMA - IN DESFASURARE ● ---------------"
-                )
+                .setTitle("--------------- ● ACTIUNE O'JASTEMMA - IN DESFASURARE ● ---------------")
                 .setDescription(
 `🕘 **Initiere:** ${dataOraRo()}
 🛡️ **Locatie:** ${locatie}
@@ -642,15 +420,9 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 🟢 **Prezenta:** DESCHISA
 🟡 **Status:** IN DESFASURARE`
                 )
-                .setThumbnail(
-                    interaction.user.displayAvatarURL({
-                        dynamic: true,
-                        size: 1024
-                    })
-                );
+                .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }));
 
             const row = new ActionRowBuilder().addComponents(
-
                 new ButtonBuilder()
                     .setCustomId('actiune_particip')
                     .setLabel('Particip')
@@ -674,7 +446,6 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
                     .setLabel('Inchide actiunea')
                     .setEmoji('🔒')
                     .setStyle(ButtonStyle.Primary)
-
             );
 
             return interaction.editReply({
@@ -684,7 +455,6 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
         }
 
     } catch (error) {
-
         if (error.code === 10062) {
             console.log('Interactiune expirata.');
             return;
@@ -694,9 +464,7 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
     }
 });
 
-// STERGERE MESAJE
 client.on('messageCreate', async message => {
-
     if (message.author.bot) return;
 
     const protectedChannels = [
@@ -709,7 +477,6 @@ client.on('messageCreate', async message => {
     ];
 
     if (protectedChannels.includes(message.channel.id)) {
-
         try {
             await message.delete();
         } catch {
