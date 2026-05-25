@@ -30,6 +30,10 @@ function dataRo() {
     return new Date().toLocaleDateString('ro-RO');
 }
 
+function dataOraRo() {
+    return new Date().toLocaleString('ro-RO');
+}
+
 function createButtons(type) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -107,7 +111,14 @@ const commands = [
         .addStringOption(o => o.setName('numeic').setDescription('Nume IC').setRequired(true))
         .addStringOption(o => o.setName('cnp').setDescription('CNP').setRequired(true))
         .addStringOption(o => o.setName('suma').setDescription('Suma/materiale').setRequired(true))
-        .addStringOption(o => o.setName('dovada').setDescription('Dovada').setRequired(true))
+        .addStringOption(o => o.setName('dovada').setDescription('Dovada').setRequired(true)),
+
+    new SlashCommandBuilder()
+        .setName('actiune')
+        .setDescription("Creeaza o actiune O'Jastemma")
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addStringOption(o => o.setName('locatie').setDescription('Locatia actiunii').setRequired(true))
+        .addStringOption(o => o.setName('inchidere').setDescription('Ora/data inchiderii').setRequired(true))
 ].map(c => c.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
@@ -132,6 +143,64 @@ client.once('ready', async () => {
 client.on('interactionCreate', async interaction => {
     try {
         if (interaction.isButton()) {
+            if (interaction.customId.startsWith('actiune_')) {
+                const embed = EmbedBuilder.from(interaction.message.embeds[0]);
+                let desc = embed.data.description || '';
+
+                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const mentions = [...desc.matchAll(/<@!?(\d+)>/g)].map(m => m[1]);
+                let participants = [...new Set(mentions)];
+
+                const prezentaOprita = desc.includes('⛔ **Prezenta:** OPRITA');
+                const actiuneInchisa = desc.includes('🔒 **Status:** INCHISA');
+
+                if (interaction.customId === 'actiune_particip') {
+                    if (prezentaOprita || actiuneInchisa) {
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
+                    }
+
+                    if (!participants.includes(interaction.user.id)) {
+                        participants.push(interaction.user.id);
+                    }
+                }
+
+                if (interaction.customId === 'actiune_nu_particip') {
+                    if (prezentaOprita || actiuneInchisa) {
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
+                    }
+
+                    participants = participants.filter(id => id !== interaction.user.id);
+                }
+
+                if (interaction.customId === 'actiune_stop_prezenta') {
+                    if (!isAdmin) {
+                        return interaction.reply({ content: '❌ Doar administratorii pot opri prezenta.', ephemeral: true });
+                    }
+
+                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
+                }
+
+                if (interaction.customId === 'actiune_inchide') {
+                    if (!isAdmin) {
+                        return interaction.reply({ content: '❌ Doar administratorii pot inchide actiunea.', ephemeral: true });
+                    }
+
+                    desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
+                    desc = desc.replace('🟡 **Status:** IN DESFASURARE', '🔒 **Status:** INCHISA');
+                    embed.setTitle("--------------- ● ACTIUNE O'JASTEMMA - INCHISA ● ---------------");
+                    embed.setColor(0xed4245);
+                }
+
+                const lista = participants.length ? participants.map(id => `<@${id}>`).join(', ') : 'N/A';
+
+                desc = desc.replace(/👥 \*\*Total participanti:\*\* .*/g, `👥 **Total participanti:** ${participants.length}`);
+                desc = desc.replace(/📋 \*\*Participanti:\*\* .*/g, `📋 **Participanti:** ${lista}`);
+
+                embed.setDescription(desc);
+
+                return interaction.update({ embeds: [embed] });
+            }
+
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: '❌ Nu ai acces la aceasta actiune.',
@@ -242,6 +311,62 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
                 );
 
             return interaction.editReply({ embeds: [embed], components: [createButtons('seif')] });
+        }
+
+        if (interaction.commandName === 'actiune') {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.editReply('❌ Nu ai acces la aceasta comanda.');
+            }
+
+            const locatie = interaction.options.getString('locatie');
+            const inchidere = interaction.options.getString('inchidere');
+
+            const embed = new EmbedBuilder()
+                .setColor(0x57f287)
+                .setTitle("--------------- ● ACTIUNE O'JASTEMMA - IN DESFASURARE ● ---------------")
+                .setDescription(
+`🕘 **Initiere:** ${dataOraRo()}
+🔴 **Inchidere:** ${inchidere}
+🛡️ **Locatie:** ${locatie}
+🏅 **Coordonator:** ${interaction.user}
+👥 **Total participanti:** 0
+📋 **Participanti:** N/A
+🟢 **Prezenta:** DESCHISA
+🟡 **Status:** IN DESFASURARE`
+                )
+                .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+                .setFooter({ text: `O' Jastemma • ${interaction.user.username}` });
+
+            const row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('actiune_particip')
+                    .setLabel('Particip')
+                    .setEmoji('✅')
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('actiune_nu_particip')
+                    .setLabel('Nu mai particip')
+                    .setEmoji('❌')
+                    .setStyle(ButtonStyle.Danger),
+
+                new ButtonBuilder()
+                    .setCustomId('actiune_stop_prezenta')
+                    .setLabel('Opreste prezenta')
+                    .setEmoji('⛔')
+                    .setStyle(ButtonStyle.Secondary),
+
+                new ButtonBuilder()
+                    .setCustomId('actiune_inchide')
+                    .setLabel('Inchide actiunea')
+                    .setEmoji('🔒')
+                    .setStyle(ButtonStyle.Primary)
+            );
+
+            return interaction.editReply({
+                embeds: [embed],
+                components: [row]
+            });
         }
 
     } catch (error) {
