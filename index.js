@@ -23,6 +23,7 @@ const CERERE_INACTIVITATE_ID = '1508084395859378257';
 const SANCTIUNI_ID = '1508084567226192072';
 const SEIF_ID = '1508088992002740255';
 const ANUNTURI_IC_ID = '1508083928500666419';
+const CRAFT_ID = '1508558446029705356';
 
 const client = new Client({
     intents: [
@@ -39,6 +40,10 @@ function dataRo() {
 
 function dataOraRo() {
     return new Date().toLocaleString('ro-RO');
+}
+
+function formatMoney(n) {
+    return `${Math.round(n).toLocaleString('ro-RO')}$`;
 }
 
 function createButtons(type) {
@@ -63,6 +68,191 @@ function createEmbed(title, color, user) {
         .setTitle(title)
         .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setFooter({ text: `O' Jastemma • ${user.username}` });
+}
+
+function craftDroguri(item, cantitate, procentSpalare) {
+    if (item === 'cocaina') {
+        const frunze = cantitate * 3;
+        const sodiu = cantitate / 4;
+        const amoniac = cantitate / 4;
+        const plicuri = cantitate;
+
+        const investitie = (sodiu * 4500) + (amoniac * 4500) + (plicuri * 150);
+        const murdari = cantitate * 4862;
+        const curatiDupaSpalare = murdari * (procentSpalare / 100);
+        const profit = curatiDupaSpalare - investitie;
+
+        return {
+            title: `🧪 Craft Cocaina x${cantitate}`,
+            description:
+`🌿 **Frunze Coca:** ${frunze}
+🧂 **Sodiu:** ${sodiu}
+⚗️ **Amoniac:** ${amoniac}
+📦 **Plicuri:** ${plicuri}
+
+💰 **Investitie:** ${formatMoney(investitie)} curati
+💸 **Bani murdari:** ${formatMoney(murdari)}
+🧼 **Procent spalare:** ${procentSpalare}%
+💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+📈 **Profit net:** ${formatMoney(profit)}`
+        };
+    }
+
+    if (item === 'crack') {
+        const plicuriCocaina = cantitate / 2;
+        const brichete = cantitate / 2;
+        const apa = cantitate;
+
+        const investitieCocaina = plicuriCocaina * 2400;
+        const investitieCrack = cantitate * 140;
+        const investitieTotala = investitieCocaina + investitieCrack;
+
+        const murdari = cantitate * 3180;
+        const curatiDupaSpalare = murdari * (procentSpalare / 100);
+        const profit = curatiDupaSpalare - investitieTotala;
+
+        return {
+            title: `🧊 Craft Crack x${cantitate}`,
+            description:
+`🧪 **Plicuri Cocaina necesare:** ${plicuriCocaina}
+🔥 **Brichete:** ${brichete}
+💧 **Apa:** ${apa}
+
+💰 **Investitie cocaina:** ${formatMoney(investitieCocaina)}
+💰 **Investitie crack:** ${formatMoney(investitieCrack)}
+💰 **Investitie totala:** ${formatMoney(investitieTotala)}
+
+💸 **Bani murdari:** ${formatMoney(murdari)}
+🧼 **Procent spalare:** ${procentSpalare}%
+💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+📈 **Profit net:** ${formatMoney(profit)}`
+        };
+    }
+
+    if (item === 'tigari') {
+        const frunze = cantitate * 20;
+        const foite = cantitate * 5;
+        const filtre = cantitate * 5;
+        const rasnite = cantitate * 2;
+        const pacheteGoale = cantitate;
+
+        const investitie = cantitate * 3000;
+        const murdari = cantitate * 5700;
+        const curatiDupaSpalare = murdari * (procentSpalare / 100);
+        const profit = curatiDupaSpalare - investitie;
+
+        return {
+            title: `🚬 Craft Tigari x${cantitate}`,
+            description:
+`🌿 **Frunze:** ${frunze}
+📄 **Foite:** ${foite}
+🧻 **Filtre:** ${filtre}
+⚙️ **Rasnite:** ${rasnite}
+📦 **Pachete goale:** ${pacheteGoale}
+
+💰 **Investitie:** ${formatMoney(investitie)} curati
+💸 **Bani murdari:** ${formatMoney(murdari)}
+🧼 **Procent spalare:** ${procentSpalare}%
+💵 **Bani curati dupa spalare:** ${formatMoney(curatiDupaSpalare)}
+📈 **Profit net:** ${formatMoney(profit)}`
+        };
+    }
+
+    return null;
+}
+
+function craftArme(item, cantitate) {
+    const arme = {
+        pistol: {
+            title: '🔫 Craft Pistol',
+            cost: 13000,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 1
+            }
+        },
+        pistolmk2: {
+            title: '🔫 Craft Pistol MK2',
+            cost: 32500,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 3
+            }
+        },
+        pistol50: {
+            title: '🔫 Craft Pistol50',
+            cost: 32500,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 3
+            }
+        },
+        microsmg: {
+            title: '🔫 Craft Micro SMG',
+            cost: 39000,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 3
+            }
+        },
+        machinepistol: {
+            title: '🔫 Craft Machine Pistol',
+            cost: 97500,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 5
+            }
+        },
+        compactrifle: {
+            title: '🔫 Craft Compact Rifle',
+            cost: 117000,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 12
+            }
+        },
+        gusenberg: {
+            title: '🔫 Craft Gusenberg',
+            cost: 162500,
+            materiale: {
+                Teava: 1,
+                Cadru: 1,
+                Mecanism: 1,
+                'Element Fixare': 13
+            }
+        }
+    };
+
+    const arma = arme[item];
+    if (!arma) return null;
+
+    let materialeText = '';
+
+    for (const [nume, valoare] of Object.entries(arma.materiale)) {
+        materialeText += `• **${nume}:** ${valoare * cantitate}\n`;
+    }
+
+    const costTotal = arma.cost * cantitate;
+
+    return {
+        title: `${arma.title} x${cantitate}`,
+        description:
+`📦 **Materiale necesare:**
+${materialeText}
+💰 **Cost total:** ${formatMoney(costTotal)} murdari`
+    };
 }
 
 const commands = [
@@ -130,7 +320,39 @@ const commands = [
         .setName('actiune')
         .setDescription("Creeaza o actiune O'Jastemma")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addStringOption(o => o.setName('locatie').setDescription('Locatia actiunii').setRequired(true))
+        .addStringOption(o => o.setName('locatie').setDescription('Locatia actiunii').setRequired(true)),
+
+    new SlashCommandBuilder()
+        .setName('craft')
+        .setDescription('Calculator craft')
+        .addStringOption(o =>
+            o.setName('categorie')
+                .setDescription('Categoria craftului')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Droguri', value: 'droguri' },
+                    { name: 'Arme', value: 'arme' }
+                )
+        )
+        .addStringOption(o =>
+            o.setName('item')
+                .setDescription('Ce vrei sa calculezi')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Cocaina', value: 'cocaina' },
+                    { name: 'Crack', value: 'crack' },
+                    { name: 'Tigari', value: 'tigari' },
+                    { name: 'Pistol', value: 'pistol' },
+                    { name: 'Pistol MK2', value: 'pistolmk2' },
+                    { name: 'Pistol50', value: 'pistol50' },
+                    { name: 'Micro SMG', value: 'microsmg' },
+                    { name: 'Machine Pistol', value: 'machinepistol' },
+                    { name: 'Compact Rifle', value: 'compactrifle' },
+                    { name: 'Gusenberg', value: 'gusenberg' }
+                )
+        )
+        .addIntegerOption(o => o.setName('cantitate').setDescription('Cantitatea dorita').setRequired(true))
+        .addNumberOption(o => o.setName('procent_spalare').setDescription('Procent spalare bani murdari').setRequired(false))
 ].map(c => c.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
@@ -168,7 +390,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'actiune_particip') {
                     if (prezentaOprita || actiuneInchisa) {
-                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', flags: 64 });
                     }
 
                     if (!participants.includes(interaction.user.id)) {
@@ -178,7 +400,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'actiune_nu_particip') {
                     if (prezentaOprita || actiuneInchisa) {
-                        return interaction.reply({ content: '❌ Prezenta este oprita.', ephemeral: true });
+                        return interaction.reply({ content: '❌ Prezenta este oprita.', flags: 64 });
                     }
 
                     participants = participants.filter(id => id !== interaction.user.id);
@@ -186,7 +408,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'actiune_stop_prezenta') {
                     if (!isAdmin) {
-                        return interaction.reply({ content: '❌ Doar administratorii pot opri prezenta.', ephemeral: true });
+                        return interaction.reply({ content: '❌ Doar administratorii pot opri prezenta.', flags: 64 });
                     }
 
                     desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
@@ -194,7 +416,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'actiune_inchide') {
                     if (!isAdmin) {
-                        return interaction.reply({ content: '❌ Doar administratorii pot inchide actiunea.', ephemeral: true });
+                        return interaction.reply({ content: '❌ Doar administratorii pot inchide actiunea.', flags: 64 });
                     }
 
                     desc = desc.replace('🟢 **Prezenta:** DESCHISA', '⛔ **Prezenta:** OPRITA');
@@ -230,7 +452,7 @@ client.on('interactionCreate', async interaction => {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: '❌ Nu ai acces la aceasta actiune.',
-                    ephemeral: true
+                    flags: 64
                 });
             }
 
@@ -261,7 +483,70 @@ ${approved ? '✅' : '❌'} **${approved ? 'Aprobat' : 'Respins'} de:** ${intera
 
         if (!interaction.isChatInputCommand()) return;
 
-        await interaction.deferReply();
+        const isCraft = interaction.commandName === 'craft';
+
+        if (isCraft) {
+            await interaction.deferReply({ flags: 64 });
+        } else {
+            await interaction.deferReply();
+        }
+
+        if (interaction.commandName === 'craft') {
+            if (interaction.channel.id !== CRAFT_ID) {
+                return interaction.editReply('❌ Foloseste aceasta comanda doar in canalul de craft.');
+            }
+
+            const categorie = interaction.options.getString('categorie');
+            const item = interaction.options.getString('item');
+            const cantitate = interaction.options.getInteger('cantitate');
+            const procentSpalare = interaction.options.getNumber('procent_spalare') ?? 100;
+
+            if (cantitate <= 0) {
+                return interaction.editReply('❌ Cantitatea trebuie sa fie mai mare decat 0.');
+            }
+
+            const droguri = ['cocaina', 'crack', 'tigari'];
+            const arme = ['pistol', 'pistolmk2', 'pistol50', 'microsmg', 'machinepistol', 'compactrifle', 'gusenberg'];
+
+            if (categorie === 'droguri' && !droguri.includes(item)) {
+                return interaction.editReply('❌ Ai ales categoria Droguri, dar itemul nu este drog.');
+            }
+
+            if (categorie === 'arme' && !arme.includes(item)) {
+                return interaction.editReply('❌ Ai ales categoria Arme, dar itemul nu este arma.');
+            }
+
+            let result = null;
+
+            if (categorie === 'droguri') {
+                result = craftDroguri(item, cantitate, procentSpalare);
+            }
+
+            if (categorie === 'arme') {
+                result = craftArme(item, cantitate);
+            }
+
+            if (!result) {
+                return interaction.editReply('❌ Craft invalid.');
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor(0xc49a5a)
+                .setTitle(result.title)
+                .setDescription(result.description)
+                .setFooter({ text: `O' Jastemma • Calculator Craft` })
+                .setTimestamp();
+
+            await interaction.editReply({ embeds: [embed] });
+
+            setTimeout(async () => {
+                try {
+                    await interaction.deleteReply();
+                } catch {}
+            }, 600000);
+
+            return;
+        }
 
         if (interaction.commandName === 'me') {
             if (interaction.channel.id !== CHAT_IC_ID) {
@@ -473,7 +758,8 @@ client.on('messageCreate', async message => {
         CERERE_INACTIVITATE_ID,
         SANCTIUNI_ID,
         SEIF_ID,
-        ANUNTURI_IC_ID
+        ANUNTURI_IC_ID,
+        CRAFT_ID
     ];
 
     if (protectedChannels.includes(message.channel.id)) {
